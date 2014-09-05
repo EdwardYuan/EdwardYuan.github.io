@@ -3,7 +3,7 @@ highlighter: null
 permalink: /:title
 
 url: http://edwardyuan.github.io
-baseurl:
+#baseurl:
 
 redcarpet:
   extensions: [strikethrough, tables]
