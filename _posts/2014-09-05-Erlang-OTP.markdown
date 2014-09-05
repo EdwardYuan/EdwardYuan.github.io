@@ -51,7 +51,7 @@ start_link(ServerName, Module, Args, Options) -> Result
 
 其中：
 
-    Module 为原子(atom)， Args为列表(term)， Options是由选项构成的列表[Option]，
+    Module 为原子(atom)， Args为数据项(term)， Options是由选项构成的列表[Option]，
 	可取的值为：
 	{debug, Dbgs}         %% 调试
 	| {timeout, time}     %% 设置超时
