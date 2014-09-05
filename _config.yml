@@ -1,6 +1,7 @@
 name: Edward Yuan
 url: http://edwardyuan.github.io
 description: A stylish blog using the Solarized color palette
+encoding: UTF-8
 
 permalink: /:year/:month/:day/:title/
 paginate: 10
