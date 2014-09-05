@@ -1,3 +1,4 @@
+encoding: UTF-8
 name: Edward Yuan
 url: http://edwardyuan.github.io
 description: A stylish blog using the Solarized color palette
@@ -5,6 +6,5 @@ description: A stylish blog using the Solarized color palette
 permalink: /:year/:month/:day/:title/
 paginate: 10
 pygments: true
-encoding: UTF-8
 
 exclude: ['README.md', 'Gemfile.lock', 'Gemfile', 'Rakefile']
