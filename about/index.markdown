@@ -9,10 +9,10 @@ My name is **Edward Yuan**, I'm a programmer living in Shanghai, China. I was bo
 
 Any question about the content in my blog, please contact me.
 
-[Email]: yuan.bo.august@gmail.com
+Email []: yuan.bo.august@gmail.com
 
-[Facebook]: https://www.facebook.com/yuan.bo.august
+Facebook []: https://www.facebook.com/yuan.bo.august
 
-[Weibo]: http://weibo.com/1157039454/profile
+Weibo []: http://weibo.com/1157039454/profile
 
-[Github]: https://github.com/EdwardYuan
+Github []: https://github.com/EdwardYuan
