@@ -85,3 +85,18 @@ start(ServerName, Module, Args, Options) -> Result
 call(ServerRef, Request) -> Reply
 call(ServerRef, Request, Timeout) -> Reply
 {% endhighlight %}
+
+
+call函数会通过向gen_server的ServerRef发送请求进行同步调用，也就是说发送消息后该函数会等待直到收到回应或超时。gen_server模块会调用回调函数 Module:handle_call/3 来处理请求。
+
+	ServerRef可以取以下值：
+
+	- Name, 当gen_server在本地注册时
+	- {Name, Node}, 当gen_server全局注册时
+	- {via, Module, ViaName}, 当gen_server通过可选的进程注册入口注册时
+
+    Request可以是任意Erlang数据项，它会被作为参数传递给 Module:handle_call/3.
+
+    参数Timeout代表超时的时间，以毫秒为单位，取任意大于0的整数，或者infinity表示永不超时.
+
+    返回值 Reply 由回调函数 handle_call/3定义.
