@@ -77,4 +77,10 @@ start_link(ServerName, Module, Args, Options) -> Result
 start(Module, Args, Options) -> Result
 start(ServerName, Module, Args, Options) -> Result
 {% endhighlight %}
+这两种方式的区别在于: start_link创建的进程将作为监控树的一部分；而start创建的进程则作为一个独立的gen_server进程，它没有相应的监督者。 深入内容请参阅监督者行为模式的相关内容。
 
+
+{% highlight %}
+call(ServerRef, Request) -> Reply
+call(ServerRef, Request, Timeout) -> Reply
+{% endhighlight %}
