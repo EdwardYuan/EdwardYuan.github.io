@@ -38,10 +38,12 @@ _ _ _
 
 下面看看各函数的参数和返回值：
 
+{% highlight erlang %}
+
 	start_link(Module, Args, Options) -> Result
 
 	start_link(ServerName, Module, Args, Options) -> Result
-
+{% endhighlight %}
 
 参数类型：
 
