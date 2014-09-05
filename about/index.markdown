@@ -3,9 +3,12 @@ layout: default
 title: About
 ---
 
-This is where you would but a short bio, and/or a description of your site. It also serves as an example of how to set up a standalone page. For example:
 
-<img src="/images/shakespeare.png" class="right" />
-**William Shakespeare** (26 April 1564 – 23 April 1616) was an English poet and playwright, widely regarded as the greatest writer in the English language and the world's pre-eminent dramatist. He is often called England's national poet and the "Bard of Avon". His extant works, including some collaborations, consist of about 38 plays, 154 sonnets, two long narrative poems, and a few other verses, the authorship of some of which is uncertain. His plays have been translated into every major living language and are performed more often than those of any other playwright.
+<img src="/images/edwardyuan.png" class="right" />
+My name is **Edward Yuan**, I'm a programmer living in Shanghai, China. I was born and brought up in Tongchuan, Shaanxi province.  I programming in C, Erlang, and Delphi(for work), I'm interesting in Linux. I love open source projects. In this blog, I'll write something about programming in Erlang and C, most of the articles would be written in Chinese, as the resources of Erlang of Chinese is pretty rare.
 
-Shakespeare was born and brought up in Stratford-upon-Avon. At the age of 18, he married Anne Hathaway—no, not *that* Anne Hathaway—with whom he had three children.
+Any question about the content in my blog, please contact me.
+
+Email: yuan.bo.august@gmail.com
+Facebook: https://www.facebook.com/yuan.bo.august
+Weibo: http://weibo.com/1157039454/profile
