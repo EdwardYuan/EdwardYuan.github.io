@@ -14,7 +14,7 @@ OTP的gen_server行为模式，在《Erlang程序设计》和《Erlang/OTP并发
 
 调用关系：
 
-	通用服务器模块											回调模块
+	通用服务器模块								回调模块
 
 	gen_server:start_link            ------------>             Module:init/1
 
