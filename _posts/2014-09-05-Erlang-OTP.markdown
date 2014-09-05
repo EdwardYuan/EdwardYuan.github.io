@@ -71,5 +71,10 @@ start_link(ServerName, Module, Args, Options) -> Result
 
 前面已经说过，gen_server:start_link会调用回调模块的init/1函数，该函数在出错时会返回{error, Reason}.
 
+另一种启动方式是
 
+{% highlight erlang %}
+start(Module, Args, Options) -> Result
+start(ServerName, Module, Args, Options) -> Result
+{% endhighlight %}
 
