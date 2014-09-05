@@ -34,29 +34,29 @@ _ _ _
  当回调函数调用失败或返回错误值时，gen_server会中止。
  gen_server不会自动跟踪退出信号。
 
-
-
 _ _ _
 
 下面看看各函数的参数和返回值：
-```
-start_link(Module, Args, Options) -> Result
-start_link(ServerName, Module, Args, Options) -> Result
-```
+
+	start_link(Module, Args, Options) -> Result
+
+	start_link(ServerName, Module, Args, Options) -> Result
+
+
 参数类型：
 
     ServerName = {local, Name}  %% 在本地将gen_server注册为Name
-	| {global, GlobalName}　　%% 注册全局名称GlobalName
-	| {via, Module, ViaName}  %% 使用模块所代表的注册入口进行注册
+	| {global, GlobalName}　　   %% 注册全局名称GlobalName
+	| {via, Module, ViaName}    %% 使用模块所代表的注册入口进行注册
 
 其中：
 
     Module 为原子(atom)， Args为列表(term)， Options是由选项构成的列表[Option]，
 	可取的值为：
-	  {debug, Dbgs}   %% 调试
-	| {timeout, time} %% 设置超时
+	{debug, Dbgs}         %% 调试
+	| {timeout, time}     %% 设置超时
 	| {spawn_opt, Sopts}  %% 将Sopts选项列表传递给spawn_opt，创建一个新的gen_server进程
 
 
-	
+
 
