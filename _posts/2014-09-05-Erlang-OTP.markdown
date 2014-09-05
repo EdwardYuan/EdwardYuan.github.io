@@ -49,7 +49,7 @@ start_link(ServerName, Module, Args, Options) -> Result
 其中：
 
     Module 为原子(atom)， Args为列表(term)， Options是由选项构成的列表[Option]，
-	可取的值为 
+	可取的值为：
 	  {debug, Dbgs}   %% 调试
 	| {timeout, time} %% 设置超时
 	| {spawn_opt, Sopts}  %% 将Sopts选项列表传递给spawn_opt，创建一个新的gen_server进程
