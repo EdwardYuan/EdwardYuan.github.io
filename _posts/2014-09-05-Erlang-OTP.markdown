@@ -10,8 +10,8 @@ categories: Erlang
 OTP的gen_server行为模式，在《Erlang程序设计》和《Erlang/OTP并发编程实战》两本书里都主要介绍如何使用，至于其中原理提到的并不多，以下内容主要介绍工作原理，主要来自官方的文档。
 
 结构：
-	 通用服务器模块 gen_server
-	 回调模块 module(例如：my_bank.erl)
+- 通用服务器模块 gen_server
+- 回调模块 module(例如：my_bank.erl)
 
 _ _ _
 
