@@ -2,7 +2,7 @@ markdown: redcarpet
 highlighter: null
 permalink: /:title
 
-url:edwardyuan.github.io
+url:http://edwardyuan.github.io
 baseurl:
 
 redcarpet:
