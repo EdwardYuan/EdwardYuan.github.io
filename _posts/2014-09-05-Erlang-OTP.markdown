@@ -161,7 +161,10 @@ gen_server:call或gen_server:multi_call将会调用此函数来处理请求。�
 	Request = term()
 	From = {pid(), Tag}
 	State = term()
-	Result = {reply, Reply, NewState} | {reply, Reply, NewState, Timeout} | {reply, Reply, NewState, hibernate} | {noreply, NewState, Timeout} | {noreply, NewState, hibernate} | {stop, Reason, Reply, NewState} | {stop, Reason, NewState}
+	Result = {reply, Reply, NewState} | {reply, Reply, NewState, Timeout} 
+	| {reply, Reply, NewState, hibernate} | {noreply, NewState, Timeout} 
+	| {noreply, NewState, hibernate} | {stop, Reason, Reply, NewState} 
+	| {stop, Reason, NewState}
 	Reply = term()
 	NewState = term()
 	Timeout = int() >= 0 | infinity
@@ -184,7 +187,8 @@ gen_server收到同步和异步以外的消息或系统消息以及超时的情�
 
 	Info = timeout | term()
 	State = term()
-	Result = {noreply, NewState} | {noreply, NewState, Timeout} | {noreply, NewState, hibernate} | {stop, Reason, NewState}
+	Result = {noreply, NewState} | {noreply, NewState, Timeout} 
+	| {noreply, NewState, hibernate} | {stop, Reason, NewState}
 	NewState = term()
 	Timeout = int() >= 0 | infinity
 	Reason = normal | term()
