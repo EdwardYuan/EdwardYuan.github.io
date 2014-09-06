@@ -117,7 +117,7 @@ cast函数与call类似，其区别是call进行同步调用，而cast则是异�
 
 {% highlight erlang %}
 reply(Client, Reply) -> Result.
-{% endhighlight}
+{% endhighlight %}
 
 当回应无法在Module:handle_call/3中定义时，reply会向调用call或multi_call函数的客户端明确发送一个返回消息。
 
