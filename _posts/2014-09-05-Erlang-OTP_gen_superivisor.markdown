@@ -10,6 +10,7 @@ categories: Erlang
 _ _ _
 
 
-###### 进程树结构 ######
+##### 进程树结构 #####
 
 <img src="/images/gen_supervisor.png" class="left" />
+
