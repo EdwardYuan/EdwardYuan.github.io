@@ -113,6 +113,21 @@ supervisor:start_child(Sup, ChildSpec).
 
 注意：当监督者进程消亡并重启后，所有动态添加的子进程将会丢失。
 
+
+终止子进程：
+
+调用以下函数可以终止任何动态或静态的子进程：
+
+{% higlight erlang %}
+supervisor:terminate_child(Sup, Id).
+{% endhighlight %}
+
+终止后的子进程将会有以下函数删除：
+
+{% highlight erlang %}
+supervisor:delete_child(Sup, Id).
+{% endhighlight %}
+
 - - -
 
 
