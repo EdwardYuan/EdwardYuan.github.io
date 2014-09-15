@@ -44,16 +44,14 @@ supervisor:start_link({global, Name}, Module, Args).
 init形式如下：
 {% highlight erlang %}
 init(...) ->
-	{ok, {{RestartStrategy, MaxR, MaxT},
-		[ChildSpec, ...]}}.
+	{ok, {{RestartStrategy, MaxR, MaxT}, [ChildSpec, ...]}}.
 {% endhighlight %}
 
 例如：
 
 {% highlight erlang %}
 init(_Args) ->
-	{ok, {one_for_one, 1, 60}, 
-	[{ch3, {ch3, start_link, []},
+	{ok, {one_for_one, 1, 60}, [{ch3, {ch3, start_link, []},
 	permanent, brutal_kill, worker, [ch3]}]}.
 {% endhighlight %}
 
