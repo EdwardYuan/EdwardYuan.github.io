@@ -25,7 +25,7 @@ module:start_link/0  --->  supervisor:start_link/3  --->  module:init/1.
 其中 supervisor:start_link/3为如下形式：
 
 {% highlight erlang %}
-supervisor:start_link({local, Name}, Module, Args)；
+supervisor:start_link({local, Name}, Module, Args);
 或
 supervisor:start_link({global, Name}, Module, Args).
 {% endhighlight %}
