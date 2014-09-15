@@ -12,7 +12,10 @@ _ _ _
 
 ##### 进程树结构 #####
 
-<img src="/images/gen_supervisor.png" class="left" />
+<img src="/images/gen_supervisor.png" class="left" width="400" />
+
+
+
 
 
 - - -
