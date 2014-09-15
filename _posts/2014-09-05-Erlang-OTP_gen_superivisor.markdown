@@ -144,6 +144,13 @@ Simple_One_For_One 监督者：
 supervisor:start_child(Sup, List).
 {% endhighlight %}
 
+
+- - -
+
+应用的终止：
+
+监督者是监督树的一部分，所以它将会自动被其监督者终止。 关闭时，监督者将会按照启动子进程的逆序根据关闭规范终止所有子进程，最后终止自身进程。
+
 - - -
 
 
