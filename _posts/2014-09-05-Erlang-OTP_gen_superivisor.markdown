@@ -97,6 +97,21 @@ init(_Args) ->
 	Type %% 表示子进程是监督者(supervisior)还是工作者(worker)
 	Modules %% 所依赖模块名称的列表
 
+- - -
+
+添加子进程：
+
+我们可以通过调用以下函数来实现向一个静态监督树中田间动态子进程：
+
+{% highlight erlang %}
+supervisor:start_child(Sup, ChildSpec).
+{% endhighlight %}
+
+其中：
+	sup %% 进程pid或监督者名称
+	ChildSpec %% 子进程规范
+
+注意：当监督者进程消亡并重启后，所有动态添加的子进程将会丢失。
 
 - - -
 
