@@ -54,6 +54,7 @@ init(_Args) ->
 {% endhighlight %}
 
 参数说明：
+
 	MaxR %% 在MaxT时间内最大重启次数
 	MaxT %% 限定时间，单位为秒
 
