@@ -73,13 +73,76 @@ init(_Args) ->
 - one_for_all %% 当一个子进程终止时，所有子进程（包括该子进程本身）都将会被重启
 - rest_for_one %% 当一个子进程终止时，所有“剩余的”子进程和它本身将本重启
 
+子进程规范：
+
+子进程规范是一个元组，用来描述受监督的进程。该元组结构如下：
+
+	{Id, StartFunc, Restart, Shutdown, Type, Modules}
+
+其中参数：
+
+	Id %% 监督者在系统内部识别子进程规范的名称，一般使用模块名
+	StartFunc %% 用于启动进程的三元组 {M, F, A}
+	Restart %% 指定子进程何时被重启
+		取值为：
+		- permanet %% 始终重启
+		- temporary %% 永不重启
+		- transient %% 非正常终止时重启
+	Shutdown %% 指明如何终止进程
+		取值为：
+		- brutal_kill %% 调用 exit(Child, kill)立即终止子进程
+		- 整型数值 %% 监督者告知子进程调用 exit(Child, shutdown)来终止，
+		  之后等待退出信号返回，如果在指定时间内未收到退出信号，则调用exit(Child, kill)
+		- infinity %% 通常表示子进程也是一个监督进程的情况，监督者将给子进程留出足够的时间来终止
+	Type %% 表示子进程是监督者(supervisior)还是工作者(worker)
+	Modules %% 所依赖模块名称的列表
 
 
+- - -
+
+添加子进程：
+
+我们可以通过调用以下函数来实现向一个静态监督树中田间动态子进程：
+
+{% highlight erlang %}
+supervisor:start_child(Sup, ChildSpec).
+{% endhighlight %}
+
+其中：
+	sup %% 进程pid或监督者名称
+	ChildSpec %% 子进程规范
+
+注意：当监督者进程消亡并重启后，所有动态添加的子进程将会丢失。
+
+终止子进程：
+
+调用以下函数可以终止任何动态或静态的子进程：
+
+{% higlight erlang %}
+supervisor:terminate_child(Sup, Id).
+{% endhighlight %}
+
+终止后的子进程将会有以下函数删除：
+
+{% highlight erlang %}
+supervisor:delete_child(Sup, Id).
+{% endhighlight %}
+
+其中：
+
+	Id %% 指在子进程规范中定义的Id
+
+同样，删除的动态添加的子进程将在监督者重启后丢失。
 
 
+- - -
 
+Simple_One_For_One 监督者：
+当监督者的子进程重启策略设置为 simple_one_for_one时，所有子进程都将是动态添加的。此时，当监督者启动时不会启动任何子进程，所有子进程都将由以下函数动态添加：
 
-
+{% highlight erlang %}
+supervisor:start_child(Sup, List).
+{% endhighlight %}
 
 
 - - -
