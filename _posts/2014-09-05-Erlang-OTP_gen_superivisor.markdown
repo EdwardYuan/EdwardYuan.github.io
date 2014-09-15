@@ -15,6 +15,11 @@ _ _ _
 <img src="/images/gen_supervisor.png" class="left" />
 
 
+- - -
+
+
+
+
 ##### 监督者调用结构 #####
 
 module:start_link/0  --->  supervisor:start_link/3  --->  module:init/1.
