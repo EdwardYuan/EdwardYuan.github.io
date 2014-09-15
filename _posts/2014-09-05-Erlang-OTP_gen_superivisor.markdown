@@ -118,7 +118,7 @@ supervisor:start_child(Sup, ChildSpec).
 
 调用以下函数可以终止任何动态或静态的子进程：
 
-{% higlight erlang %}
+{% highlight erlang %}
 supervisor:terminate_child(Sup, Id).
 {% endhighlight %}
 
@@ -126,6 +126,22 @@ supervisor:terminate_child(Sup, Id).
 
 {% highlight erlang %}
 supervisor:delete_child(Sup, Id).
+{% endhighlight %}
+
+其中：
+
+	Id %% 指在子进程规范中定义的Id
+
+同样，删除的动态添加的子进程将在监督者重启后丢失。
+
+
+- - -
+
+Simple_One_For_One 监督者：
+当监督者的子进程重启策略设置为 simple_one_for_one时，所有子进程都将是动态添加的。此时，当监督者启动时不会启动任何子进程，所有子进程都将由以下函数动态添加：
+
+{% highlight erlang %}
+supervisor:start_child(Sup, List).
 {% endhighlight %}
 
 - - -
