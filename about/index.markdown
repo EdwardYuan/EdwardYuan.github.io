@@ -5,7 +5,8 @@ title: About
 
 
 <img src="/images/edwardyuan.png" class="right" />
-My name is **Edward Yuan**, I'm a programmer living in Shanghai, China. I was born and brought up in Tongchuan, Shaanxi province.  I programming in C, Erlang, and Delphi(for work), I'm interested in Linux. I love open source projects. In this blog, I'll write something about programming in Erlang and C, most of the articles would be written in Chinese, as the resources of Erlang of Chinese is pretty rare.
+Hi, I'm **Edward Yuan**, I'm a programmer living in Shanghai, China. I was born and brought up in Tongchuan, Shaanxi province.  I programming in C, Erlang, and Delphi(for work), I'm interested in Linux. I love open source projects. In this blog, I'll write something about programming in Erlang and C, most of the articles would be written in Chinese, as the resources of Erlang of Chinese is pretty rare.
+Also, I'll write my thought about programming and my atitude of the Internet here.
 
 Any question about the content in my blog, please contact me: 
 
