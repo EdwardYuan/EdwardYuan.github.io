@@ -1,7 +1,7 @@
 encoding: UTF-8
 name: Edward Yuan
 url: http://edwardyuan.github.io
-description: Edward's Blog —— Some Raw Thought.
+description: 少数派报告.
 
 permalink: /:year/:month/:day/:title/
 paginate: 10
