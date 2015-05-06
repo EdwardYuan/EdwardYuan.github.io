@@ -1,7 +1,7 @@
 encoding: UTF-8
-name: Edward Yuan
+name: 少数派报告
 url: http://edwardyuan.github.io
-description: 少数派报告.
+description: Some raw thought.
 
 permalink: /:year/:month/:day/:title/
 paginate: 10
