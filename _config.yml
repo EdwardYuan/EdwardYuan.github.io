@@ -1,11 +1,5 @@
-encoding: UTF-8
-name: 少数派报告
-url: http://edwardyuan.github.io
+title: 少数派报告
 description: Some raw thought.
-
-permalink: /:year/:month/:day/:title/
-paginate: 10
-pygments: true
+show_downloads: true
+google_analytics:
 theme: jekyll-theme-hacker
-
-exclude: ['README.md', 'Gemfile.lock', 'Gemfile', 'Rakefile']
