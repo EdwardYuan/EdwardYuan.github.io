@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <meta charset='utf-8'>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="/assets/css/style.css?v=0e60b3399e148529e12e3724757c327084b3e895">
+
+<!-- Begin Jekyll SEO tag v2.7.1 -->
+<title>面向对象编程方法的反思 | 少数派报告—-Edward’s Webblog</title>
+<meta name="generator" content="Jekyll v3.8.6" />
+<meta property="og:title" content="面向对象编程方法的反思" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="“面向对象”是每个计算机系学生一定会接触到的概念，也是每个程序员一定会接触到的概念，连我学习测控专业的表弟都问我什么叫“面向对象”。对于这一概念今日的红火，恐怕连艾伦·C·凯创造它时也未曾想到。" />
+<meta property="og:description" content="“面向对象”是每个计算机系学生一定会接触到的概念，也是每个程序员一定会接触到的概念，连我学习测控专业的表弟都问我什么叫“面向对象”。对于这一概念今日的红火，恐怕连艾伦·C·凯创造它时也未曾想到。" />
+<link rel="canonical" href="http://localhost:4000/programming/2014/12/04/Think-about-OOP.html" />
+<meta property="og:url" content="http://localhost:4000/programming/2014/12/04/Think-about-OOP.html" />
+<meta property="og:site_name" content="少数派报告—-Edward’s Webblog" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2014-12-04T18:46:00+08:00" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="面向对象编程方法的反思" />
+<script type="application/ld+json">
+{"@type":"BlogPosting","url":"http://localhost:4000/programming/2014/12/04/Think-about-OOP.html","headline":"面向对象编程方法的反思","dateModified":"2014-12-04T18:46:00+08:00","datePublished":"2014-12-04T18:46:00+08:00","mainEntityOfPage":{"@type":"WebPage","@id":"http://localhost:4000/programming/2014/12/04/Think-about-OOP.html"},"description":"“面向对象”是每个计算机系学生一定会接触到的概念，也是每个程序员一定会接触到的概念，连我学习测控专业的表弟都问我什么叫“面向对象”。对于这一概念今日的红火，恐怕连艾伦·C·凯创造它时也未曾想到。","@context":"https://schema.org"}</script>
+<!-- End Jekyll SEO tag -->
+
+  </head>
+
+  <body>
+
+    <header>
+      <div class="container">
+        <a id="a-title" href="/">
+          <h1>少数派报告----Edward's Webblog</h1>
+        </a>
+        <h2>Some raw thought.</h2>
+
+        <section id="downloads">
+          
+            <a href="https://github.com/EdwardYuan/EdwardYuan.github.io/zipball/gh-pages" class="btn">Download as .zip</a>
+            <a href="https://github.com/EdwardYuan/EdwardYuan.github.io/tarball/gh-pages" class="btn">Download as .tar.gz</a>
+          
+          <a href="https://github.com/EdwardYuan/EdwardYuan.github.io" class="btn btn-github"><span class="icon"></span>View on GitHub</a>
+        </section>
+      </div>
+    </header>
+
+    <div class="container">
+      <section id="main_content">
+        <small>4 December 2014</small>
+<h1>面向对象编程方法的反思</h1>
+
+<p class="view">by </p>
+
+<p>“面向对象”是每个计算机系学生一定会接触到的概念，也是每个程序员一定会接触到的概念，连我学习测控专业的表弟都问我什么叫“面向对象”。对于这一概念今日的红火，恐怕连艾伦·C·凯创造它时也未曾想到。</p>
+
+<p>面向对象思想提出“一切皆是对象”的说法，并以此应用于计算机程序设计中，提出了面向对象的三个基本要素：封装、继承和多态。
+所谓封装，是指把事物抽象为类，暴露对外接口，隐藏内部实现。
+所谓继承，是指利用现有类的功能，在无需重写原有类的情况下进行扩展。
+所谓多态，是指将父类设置成为和起派生类对象相等的技术。简单说即允许将派生类类型的指针赋给父类类型的指针。</p>
+
+<p>事实上，我们在最初接受此种编程范式时通常是默认了其正确性。之后便尽可能在实际中应用它，却鲜少提出过反对或是怀疑。当我们默认了其正确性之后，无论由此引起何种问题，我们都只会认为其不够完善或是自己使用不当，绝不会去质疑方法本身，因此，在面向对象遇到问题之后，便产生了例如设计模式这类理论和方法来掩盖其先天不足。</p>
+
+<p>对于面向对象的问题，我发现了以下几点：</p>
+
+<p>首先，面向对象方法使我们编写了大量本不必要的代码。例如，当我们要写一个swap函数交换两个变量的值，如果用C语言代码可以这样写：</p>
+
+<figure class="highlight"><pre><code class="language-c" data-lang="c"><span class="kt">void</span> <span class="nf">swap</span><span class="p">(</span><span class="kt">int</span> <span class="o">*</span><span class="n">px</span><span class="p">,</span> <span class="kt">int</span> <span class="o">*</span><span class="n">py</span><span class="p">);</span> <span class="c1">// 函数体此处略过，这个应该是最基础的内容，想不起来可以翻阅K&amp;R的《C程序设计语言》</span></code></pre></figure>
+
+<p>而使用面向对象语言比如java则会是这样：</p>
+
+<figure class="highlight"><pre><code class="language-java" data-lang="java"><span class="kd">class</span> <span class="nc">ClassA</span><span class="o">{</span>
+    <span class="kd">private</span> <span class="kt">int</span> <span class="n">value</span><span class="o">;</span>
+    <span class="kd">public</span> <span class="nf">ClassA</span><span class="o">(</span><span class="kt">int</span> <span class="n">i</span><span class="o">)</span> <span class="o">{</span><span class="k">this</span><span class="o">.</span><span class="na">value</span><span class="o">=</span><span class="n">i</span><span class="o">;}</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">setValue</span><span class="o">(</span><span class="kt">int</span> <span class="n">value</span><span class="o">){</span><span class="k">this</span><span class="o">.</span><span class="na">value</span><span class="o">=</span><span class="n">value</span><span class="o">;}</span>
+    <span class="kd">public</span> <span class="kt">int</span> <span class="nf">getValue</span><span class="o">(){</span><span class="k">return</span> <span class="k">this</span><span class="o">.</span><span class="na">value</span><span class="o">;}</span>
+    <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">swap</span><span class="o">(</span><span class="nc">ClassA</span> <span class="n">a</span><span class="o">,</span> <span class="nc">ClassA</span> <span class="n">b</span><span class="o">){</span>
+        <span class="nc">ClassA</span> <span class="n">c</span><span class="o">=</span><span class="k">new</span> <span class="nc">ClassA</span><span class="o">(</span><span class="n">a</span><span class="o">.</span><span class="na">getValue</span><span class="o">());</span>
+        <span class="n">a</span><span class="o">.</span><span class="na">setValue</span><span class="o">(</span><span class="n">b</span><span class="o">.</span><span class="na">getValue</span><span class="o">());</span>
+        <span class="n">b</span><span class="o">.</span><span class="na">setValue</span><span class="o">(</span><span class="n">c</span><span class="o">.</span><span class="na">getValue</span><span class="o">());</span>
+    <span class="o">}</span>
+<span class="o">}</span></code></pre></figure>
+
+<p>很明显，c代码要比java简洁得多。本来一个函数可以解决的问题，OO却告诉我们需要一个类，于是就多出了许多代码。我认为编程时一条重要的原则就即：no more, no less. 上述java代码很难使我们认为它是美的。</p>
+
+<p>其次，面向对象方法在一些时候（其实说是很多时候也不为过）并不符合数学的思维方式，而至少当前我们使用的计算机还是基于数学的理论基础创造的。同样还是上述例子，当我们在数学中解决交换数值问题是该是如何思维的？当然是把要交换的内容作为参数传 入函数。正如Joe Armstrong所说，数学的思维方式中数据和函数时分开的。数学家们不会也不许要将这两者粘合在一起构成一个对象或是其他什么东西。当然，按照Martin Vilcans反驳Joe的文章《No, that’s not why oo sucks》中指出Joe并没有提出合理的解释来证明为何数据和函数应当分开。那么请思考以下情况：假设我们现在有两个类： Class A 和 Class B， 我们需要在A的实例中操作B实例中的某个数据，按照面向对象的设计，我们可以有这两种方式：</p>
+<ol>
+  <li>在A中创建B的实例，并访问B中响应函数来操作该数据</li>
+  <li>创建全局的B实例并在A中通过访问B实例public函数来操作数据
+无论上述哪种方式，不仅增加了耦合，同时使代码失去美感，而如果我们分离了数据和函数，则避免了这些问题。</li>
+</ol>
+
+<p>第三，在第三方库的使用方面，基于面向对象设计的通常时类库，而基于面向过程或函数式则通常为函数库。以函数方式实现的优势在于我们无需在自己的代码中添加多余的东西，对库的使用恰到好处，以类似黑盒的方式，传入参数，得到需要的返回值。</p>
+
+<p>所以，面向对象的设计思想本身即存在着不少问题，它造成了耦合，却又创造出来解耦，这本身就是一件很无聊的事情，而使用者却常常对这些问题视而不见。而面向对象本身也就是把简单问题复杂化的典型。</p>
+
+<p>这里所说的几点主要是提醒大家思考，我们不该一味接受而失去了独立思考的能力。这些是我的想法，还比较笼统，以后会进一步梳理。</p>
+
+<p>参考 Why OO sucks —— Joe Armstrong
+No, that’s not why OO sucks —— Martin Vilcans</p>
+
+<p>完</p>
+
+
+
+
+  <small>tags: <em></em></small>
+
+
+      </section>
+    </div>
+
+    
+  </body>
+</html>

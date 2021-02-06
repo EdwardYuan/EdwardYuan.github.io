@@ -1,0 +1,622 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+	<channel>
+		<title></title>
+		<description>Some raw thought.</description>
+		<link>http://localhost:4000</link>
+		<atom:link href="http://localhost:4000/feed.xml" rel="self" type="application/rss+xml" />
+		
+			<item>
+				<title>Erlang与函数式编程思想摘要</title>
+				<description>&lt;hr /&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;函数式&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;hr /&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;并发&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;hr /&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;纯函数&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;hr /&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;消息传递&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;hr /&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;容错&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;hr /&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;副作用&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;hr /&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;OTP&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;hr /&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;模块与节点&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;hr /&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;动态升级&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;hr /&gt;
+
+</description>
+				<pubDate>Tue, 01 Dec 2015 10:01:00 +0800</pubDate>
+				<link>http://localhost:4000/programming/2015/12/01/Erlang-And-Functional-Thinking.html</link>
+				<guid isPermaLink="true">http://localhost:4000/programming/2015/12/01/Erlang-And-Functional-Thinking.html</guid>
+			</item>
+		
+			<item>
+				<title>杂谈现代高级编程语言[转]</title>
+				<description>&lt;p&gt;之前看到过这篇文章，不记得是谁的了，当时存了PDF放在机器上，正好刚才看到了，就贴出来吧，好象是陈硕的文章。如有其它问题请右键告知，如有法律问题，亦请告知，我会及时删除。以下是原文：&lt;/p&gt;
+
+&lt;p&gt;杂谈现代高级编程语言&lt;/p&gt;
+
+&lt;p&gt;几个月之前，Slashdot 转载了Robert Harper教授的一篇博客，说卡内基梅隆大学计算机系把”面向对
+象编程“从大一新生的必修课中删掉了，其原因是
+Object-oriented programming … is both anti-modular and anti-parallel by its very
+nature.
+这两个原因（anti-modular和anti-parallel）都是很重的指责了；尤其是anti-modular，因为OO的基
+本思想通常被理解成“封装”，从而实现模块化。
+我是在1995年第一次听说“面向对象”（Object Oriented）这个说法。当时在学习正在成长过程中的
+C++，用的是Borland C++ 1.0。从那时开始的很多年里，”类“（class）、“对象”（object）和
+“方法”（methods），以及在这些概念之上构建的”继承“（inheritance）和”多态
+“（polymorphism）都是我理解中OO最核心的思想。我猜大多数程序员在这方面的认识都和我差不
+多。
+但是“封装”真的是OO的本质嘛？直到最近为了给iPhone写个玩具程序而学习Objective-C（一种非
+常古老和原始的面向对象编程语言）的时候，才注意到早在1998年，OO之父Alan Kay就曾经在一篇
+邮件中说，他很后悔发明了“object”这个词，从而误导大家，把注意力都集中到“封装”，而忽视了
+OO的本质——messaging（消息传递）。Alan Kay的原话是：
+The big idea is “messaging” … . The key in making great and growable systems is
+much more to design how its modules communicate rather than what their internal
+properties and behaviors should be.
+Objective-C的设计是非常强调“消息传递”（messaging）的——对一个object的method的调用，
+被称为“给这个object发了一个消息”。为了突出调用method时指定的参数（parameters）实际上
+是消息中的一些内容，Objective-C不惜把method的定义方式都做了相对于C的很大的修改，从而把
+参数嵌入在method的名字里。比如在一个叫做myWebView对象中搜索一段文字，要求不区分大小写，
+从前往后搜索，用Objective-C来描述是：&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-objective-c&quot; data-lang=&quot;objective-c&quot;&gt;[myWebView searchFor:myString
+direction:YES
+caseSensitive:NO
+wrap:YES]&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;而用C++或者Java来描述，则是&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-java&quot; data-lang=&quot;java&quot;&gt;&lt;span class=&quot;n&quot;&gt;myWebView&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;searchFor&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;myString&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;YES&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;NO&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;YES&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;乍看上去，C++ 或者Java的方式更简短，但是Objective-C的方式更强调“发消息”。实际上，上面
+Objective-C语句会被翻译成如下C函数调用：&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-c&quot; data-lang=&quot;c&quot;&gt;&lt;span class=&quot;n&quot;&gt;objc_msgSend&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;myWebView&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;searchFor&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;direction&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;caseSensitive&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;wrap&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;myString&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;YES&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;NO&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;YES&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;从强调messaging的角度看，Objective-C确实比C++和Java更符合Alan Kay对OO思想的描述。
+OO中的messaging思想不仅体现在Objective-C语言以及在其上构建的NextSTEP/Cocoa GUI编程套
+件上。在Cocoa因为Mac OS X和iPhone流行起来之前，很多人都接触过Qt（一种基于C++语言的
+GUI开发套件）。Qt对messaing的支持比Objective-C/Cocoa更彻底——每个object可以发出若干
+signal，每个signal可以触发这个object自己的或者其他objects的若干个slot。
+有意思的是，为了支持messaging，Qt对C++语言做了扩展，而Objective-C对C语言做了扩展。这
+两套扩展都利用了起源于C语言的“宏”机制（macro）。类似的做法也可以用于Java，前提是我们在
+调用Java编译器之前，先调用一下cpp宏展开程序来预处理一下我们的Java程序。这事儿可以留待
+Java爱好者们来搞？
+不管是Objective-C还是Qt，都会“尽力”去检查一个object是否支持一个method（或者叫
+message），但是并不禁止程序员向一个object发送一个它不认识的message（或者调用一个object
+没有的method）。说“尽力”检查，是因为两者都不能保证检查的完备性。这是因为Objective-C和
+Qt都支持多态；具体的说，接受message的object可能是表示为一个指针（指向object），所以直到
+运行时候，当一个message抵达某个object的时候，系统才能（通过查这个object对应的message
+list）知道这个object是否认识这个message。
+这种灵活性在Google新推出的Go语言中也同样实现了，而且做的很极致——Go语言中没有class的
+概念；换句话说，不需要是class类型的object才能有对应的方法（methods）——Go允许给几乎任
+何类型附上methods。而且程序中可以很方便的检测一个object是否支持（一组）methods，比如：&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-go&quot; data-lang=&quot;go&quot;&gt;&lt;span class=&quot;k&quot;&gt;type&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Stringer&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;interface&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;String&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;string&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;s&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;ok&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;:=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;v&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Stringer&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;c&quot;&gt;// Test whether object v implements &quot;String()&quot;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;【和Go的这种灵活性类似的，Objective-C允许给已经定义了的class增加一些methods，而不需要
+derive subclass；Objective-C的这种机制被称为category。和Go不同的是，一个category是对某个
+class的一个扩展，而Go语言里完全没有class了（但是有interface的概念）。】
+说到这里，我觉得差不多可以反过来理解Robert Harper教授对OO的评价了——其实Robert不是在
+藐视OO，而是在指责很多imperative OO languages（我理解包括Java和未经Qt扩展的C++；详见
+后述），认为这些语言没有完成实现OO中object messaging的核心思想，从而不算实现了“模块化
+“（modulization）的思想。
+上述都是关于程序的模块化。实际上，模块化的另一个主要方面是对“数据”（data)的模块化。从图灵
+机和lambda-calculus开始，计算机科学家们就注意到程序和数据是统一的；比如在冯诺依曼的“二进
+制存储电子计算机”模型里，程序和数据都是bit stream。即时我们在讨论高级编程语言的时候，程序
+和数据也不应该被分开。因为现代数据操作和模块化的基础是并行程序（parallelism），而有效实现并
+行的基础是程序的first-class表达，也就是把程序作为一种基本数据类型。
+鉴于这篇帖子已经很长了，这段话就作为下一篇帖子的提纲吧。下一篇帖子里，我们来说说
+XML、JSON、MessagePack、Protocol Buffers这些persistent data structure，以及用源于古老的
+functional programming paradigm的Go语言和MapReduce实现的并行数据操作。&lt;/p&gt;
+</description>
+				<pubDate>Thu, 05 Nov 2015 11:16:00 +0800</pubDate>
+				<link>http://localhost:4000/programming/2015/11/05/talking-about-modern-advanced-programming-languages.html</link>
+				<guid isPermaLink="true">http://localhost:4000/programming/2015/11/05/talking-about-modern-advanced-programming-languages.html</guid>
+			</item>
+		
+			<item>
+				<title>面向对象编程方法的反思</title>
+				<description>&lt;p&gt;“面向对象”是每个计算机系学生一定会接触到的概念，也是每个程序员一定会接触到的概念，连我学习测控专业的表弟都问我什么叫“面向对象”。对于这一概念今日的红火，恐怕连艾伦·C·凯创造它时也未曾想到。&lt;/p&gt;
+
+&lt;p&gt;面向对象思想提出“一切皆是对象”的说法，并以此应用于计算机程序设计中，提出了面向对象的三个基本要素：封装、继承和多态。
+所谓封装，是指把事物抽象为类，暴露对外接口，隐藏内部实现。
+所谓继承，是指利用现有类的功能，在无需重写原有类的情况下进行扩展。
+所谓多态，是指将父类设置成为和起派生类对象相等的技术。简单说即允许将派生类类型的指针赋给父类类型的指针。&lt;/p&gt;
+
+&lt;p&gt;事实上，我们在最初接受此种编程范式时通常是默认了其正确性。之后便尽可能在实际中应用它，却鲜少提出过反对或是怀疑。当我们默认了其正确性之后，无论由此引起何种问题，我们都只会认为其不够完善或是自己使用不当，绝不会去质疑方法本身，因此，在面向对象遇到问题之后，便产生了例如设计模式这类理论和方法来掩盖其先天不足。&lt;/p&gt;
+
+&lt;p&gt;对于面向对象的问题，我发现了以下几点：&lt;/p&gt;
+
+&lt;p&gt;首先，面向对象方法使我们编写了大量本不必要的代码。例如，当我们要写一个swap函数交换两个变量的值，如果用C语言代码可以这样写：&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-c&quot; data-lang=&quot;c&quot;&gt;&lt;span class=&quot;kt&quot;&gt;void&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;swap&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;px&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;py&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;// 函数体此处略过，这个应该是最基础的内容，想不起来可以翻阅K&amp;amp;R的《C程序设计语言》&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;而使用面向对象语言比如java则会是这样：&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-java&quot; data-lang=&quot;java&quot;&gt;&lt;span class=&quot;kd&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;ClassA&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;kd&quot;&gt;private&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;value&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;;&lt;/span&gt;
+    &lt;span class=&quot;kd&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;ClassA&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;i&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;this&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;value&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;i&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;;}&lt;/span&gt;
+    &lt;span class=&quot;kd&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;void&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;setValue&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;value&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;){&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;this&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;value&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;value&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;;}&lt;/span&gt;
+    &lt;span class=&quot;kd&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;getValue&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(){&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;this&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;value&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;;}&lt;/span&gt;
+    &lt;span class=&quot;kd&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;static&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;void&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;swap&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nc&quot;&gt;ClassA&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;a&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;ClassA&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;b&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;){&lt;/span&gt;
+        &lt;span class=&quot;nc&quot;&gt;ClassA&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;c&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;new&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;ClassA&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;a&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;getValue&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;());&lt;/span&gt;
+        &lt;span class=&quot;n&quot;&gt;a&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;setValue&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;b&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;getValue&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;());&lt;/span&gt;
+        &lt;span class=&quot;n&quot;&gt;b&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;setValue&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;c&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;getValue&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;());&lt;/span&gt;
+    &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;很明显，c代码要比java简洁得多。本来一个函数可以解决的问题，OO却告诉我们需要一个类，于是就多出了许多代码。我认为编程时一条重要的原则就即：no more, no less. 上述java代码很难使我们认为它是美的。&lt;/p&gt;
+
+&lt;p&gt;其次，面向对象方法在一些时候（其实说是很多时候也不为过）并不符合数学的思维方式，而至少当前我们使用的计算机还是基于数学的理论基础创造的。同样还是上述例子，当我们在数学中解决交换数值问题是该是如何思维的？当然是把要交换的内容作为参数传 入函数。正如Joe Armstrong所说，数学的思维方式中数据和函数时分开的。数学家们不会也不许要将这两者粘合在一起构成一个对象或是其他什么东西。当然，按照Martin Vilcans反驳Joe的文章《No, that’s not why oo sucks》中指出Joe并没有提出合理的解释来证明为何数据和函数应当分开。那么请思考以下情况：假设我们现在有两个类： Class A 和 Class B， 我们需要在A的实例中操作B实例中的某个数据，按照面向对象的设计，我们可以有这两种方式：&lt;/p&gt;
+&lt;ol&gt;
+  &lt;li&gt;在A中创建B的实例，并访问B中响应函数来操作该数据&lt;/li&gt;
+  &lt;li&gt;创建全局的B实例并在A中通过访问B实例public函数来操作数据
+无论上述哪种方式，不仅增加了耦合，同时使代码失去美感，而如果我们分离了数据和函数，则避免了这些问题。&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;第三，在第三方库的使用方面，基于面向对象设计的通常时类库，而基于面向过程或函数式则通常为函数库。以函数方式实现的优势在于我们无需在自己的代码中添加多余的东西，对库的使用恰到好处，以类似黑盒的方式，传入参数，得到需要的返回值。&lt;/p&gt;
+
+&lt;p&gt;所以，面向对象的设计思想本身即存在着不少问题，它造成了耦合，却又创造出来解耦，这本身就是一件很无聊的事情，而使用者却常常对这些问题视而不见。而面向对象本身也就是把简单问题复杂化的典型。&lt;/p&gt;
+
+&lt;p&gt;这里所说的几点主要是提醒大家思考，我们不该一味接受而失去了独立思考的能力。这些是我的想法，还比较笼统，以后会进一步梳理。&lt;/p&gt;
+
+&lt;p&gt;参考 Why OO sucks —— Joe Armstrong
+No, that’s not why OO sucks —— Martin Vilcans&lt;/p&gt;
+
+&lt;p&gt;完&lt;/p&gt;
+
+</description>
+				<pubDate>Thu, 04 Dec 2014 18:46:00 +0800</pubDate>
+				<link>http://localhost:4000/programming/2014/12/04/Think-about-OOP.html</link>
+				<guid isPermaLink="true">http://localhost:4000/programming/2014/12/04/Think-about-OOP.html</guid>
+			</item>
+		
+			<item>
+				<title>理解Erlang OTP gen_event</title>
+				<description>&lt;h5 id=&quot;目录&quot;&gt;目录&lt;/h5&gt;
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;A. gen_event作用
+B. gen_event 与 gen_server 及 supervisor之间的关系
+C. gen_event 细节描述
+	1. 各函数作用、参数、返回值，哪几个函数是必需的
+	2. 每个函数是使用方法
+D. 一个具体的例子
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+</description>
+				<pubDate>Fri, 05 Sep 2014 13:11:00 +0800</pubDate>
+				<link>http://localhost:4000/erlang/2014/09/05/Erlang-OTP-gen_event.html</link>
+				<guid isPermaLink="true">http://localhost:4000/erlang/2014/09/05/Erlang-OTP-gen_event.html</guid>
+			</item>
+		
+			<item>
+				<title>理解Erlang OTP superivisor 行为模式</title>
+				<description>&lt;p&gt;本文介绍OTP行为模式中的supervisor行为，即监督模式，此行为模式主要用于监督和管理服务器，在服务器崩溃后重启进程。 本文介绍监督者模式的原理和结构，具体示例代码请参考官方文档和《Erlang/OTP并发实战》一书。&lt;/p&gt;
+
+&lt;hr /&gt;
+
+&lt;h5 id=&quot;进程树结构&quot;&gt;进程树结构&lt;/h5&gt;
+
+&lt;p&gt;&lt;img src=&quot;/images/gen_supervisor.png&quot; class=&quot;left&quot; width=&quot;700&quot; /&gt;&lt;/p&gt;
+
+&lt;hr /&gt;
+
+&lt;h5 id=&quot;监督者调用结构&quot;&gt;监督者调用结构&lt;/h5&gt;
+
+&lt;p&gt;module:start_link/0  —&amp;gt;  supervisor:start_link/3  —&amp;gt;  module:init/1.&lt;/p&gt;
+
+&lt;p&gt;其中 supervisor:start_link/3为如下形式：&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-erlang&quot; data-lang=&quot;erlang&quot;&gt;&lt;span class=&quot;nn&quot;&gt;supervisor&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;start_link&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;({&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;local&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;Name&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;},&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;Module&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;Args&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+&lt;span class=&quot;err&quot;&gt;或&lt;/span&gt;
+&lt;span class=&quot;nn&quot;&gt;supervisor&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;start_link&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;({&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;global&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;Name&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;},&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;Module&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;Args&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;).&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;该函数创建一个新的监督者进程。
+其中参数如下：&lt;/p&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;{local, Name} 和 {global, Name} 与 gen_server行为模式中意义相同。
+Module %% 为监督者模块名
+Args %% 传入参数
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;新的监督者进程将调用监督者模块中的module:init([])函数以期返回{ok, StartSpec}.&lt;/p&gt;
+
+&lt;p&gt;init形式如下：&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-erlang&quot; data-lang=&quot;erlang&quot;&gt;&lt;span class=&quot;nf&quot;&gt;init&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(...)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;-&amp;gt;&lt;/span&gt;
+	&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;ok&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;RestartStrategy&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;MaxR&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;MaxT&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;},&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;ChildSpec&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;...]&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;}.&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;例如：&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-erlang&quot; data-lang=&quot;erlang&quot;&gt;&lt;span class=&quot;nf&quot;&gt;init&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(_&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;Args&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;-&amp;gt;&lt;/span&gt;
+	&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;ok&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;one_for_one&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;60&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;},&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[{&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;ch3&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;ch3&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;start_link&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[]},&lt;/span&gt;
+	&lt;span class=&quot;n&quot;&gt;permanent&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;brutal_kill&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;worker&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;ch3&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]}]}.&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;参数说明：&lt;/p&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;MaxR %% 在MaxT时间内最大重启次数
+MaxT %% 限定时间，单位为秒
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;最大重启频率：&lt;/p&gt;
+
+&lt;p&gt;如果在过去MaxT秒内重启次数超过了MaxR，监督者将会终止所有子进程然后终止自身进程。
+当监督者进程终止时，下一优先级的监督者可能做如下操作：&lt;/p&gt;
+&lt;ul&gt;
+  &lt;li&gt;重启监督者&lt;/li&gt;
+  &lt;li&gt;终止监督者&lt;/li&gt;
+  &lt;li&gt;终止自身进程&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;重启策略:&lt;/p&gt;
+
+&lt;p&gt;在init/1 中返回值 RestartStrategy 表示监督者重启策略，其可能取值如下：&lt;/p&gt;
+&lt;ul&gt;
+  &lt;li&gt;one_for_one %% 当一个进程终止时，只有它自身会被重启&lt;/li&gt;
+  &lt;li&gt;one_for_all %% 当一个子进程终止时，所有子进程（包括该子进程本身）都将会被重启&lt;/li&gt;
+  &lt;li&gt;rest_for_one %% 当一个子进程终止时，所有“剩余的”子进程和它本身将本重启&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;子进程规范：&lt;/p&gt;
+
+&lt;p&gt;子进程规范是一个元组，用来描述受监督的进程。该元组结构如下：&lt;/p&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;{Id, StartFunc, Restart, Shutdown, Type, Modules}
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;其中参数：&lt;/p&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;Id %% 监督者在系统内部识别子进程规范的名称，一般使用模块名
+StartFunc %% 用于启动进程的三元组 {M, F, A}
+Restart %% 指定子进程何时被重启
+	取值为：
+	- permanet %% 始终重启
+	- temporary %% 永不重启
+	- transient %% 非正常终止时重启
+Shutdown %% 指明如何终止进程
+	取值为：
+	- brutal_kill %% 调用 exit(Child, kill)立即终止子进程
+	- 整型数值 %% 监督者告知子进程调用 exit(Child, shutdown)来终止，
+	  之后等待退出信号返回，如果在指定时间内未收到退出信号，则调用exit(Child, kill)
+	- infinity %% 通常表示子进程也是一个监督进程的情况，监督者将给子进程留出足够的时间来终止
+Type %% 表示子进程是监督者(supervisior)还是工作者(worker)
+Modules %% 所依赖模块名称的列表
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;hr /&gt;
+
+&lt;p&gt;添加子进程：&lt;/p&gt;
+
+&lt;p&gt;我们可以通过调用以下函数来实现向一个静态监督树中田间动态子进程：&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-erlang&quot; data-lang=&quot;erlang&quot;&gt;&lt;span class=&quot;nn&quot;&gt;supervisor&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;start_child&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;Sup&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;ChildSpec&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;).&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;其中：
+	sup %% 进程pid或监督者名称
+	ChildSpec %% 子进程规范&lt;/p&gt;
+
+&lt;p&gt;注意：当监督者进程消亡并重启后，所有动态添加的子进程将会丢失。&lt;/p&gt;
+
+&lt;p&gt;终止子进程：&lt;/p&gt;
+
+&lt;p&gt;调用以下函数可以终止任何动态或静态的子进程：&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-erlang&quot; data-lang=&quot;erlang&quot;&gt;&lt;span class=&quot;nn&quot;&gt;supervisor&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;terminate_child&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;Sup&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;Id&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;).&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;终止后的子进程将会有以下函数删除：&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-erlang&quot; data-lang=&quot;erlang&quot;&gt;&lt;span class=&quot;nn&quot;&gt;supervisor&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;delete_child&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;Sup&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;Id&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;).&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;其中：&lt;/p&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;Id %% 指在子进程规范中定义的Id
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;同样，删除的动态添加的子进程将在监督者重启后丢失。&lt;/p&gt;
+
+&lt;hr /&gt;
+
+&lt;p&gt;Simple_One_For_One 监督者：
+当监督者的子进程重启策略设置为 simple_one_for_one时，所有子进程都将是动态添加的。此时，当监督者启动时不会启动任何子进程，所有子进程都将由以下函数动态添加：&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-erlang&quot; data-lang=&quot;erlang&quot;&gt;&lt;span class=&quot;nn&quot;&gt;supervisor&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;start_child&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;Sup&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;List&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;).&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;hr /&gt;
+
+&lt;p&gt;应用的终止：&lt;/p&gt;
+
+&lt;p&gt;监督者是监督树的一部分，所以它将会自动被其监督者终止。 关闭时，监督者将会按照启动子进程的逆序根据关闭规范终止所有子进程，最后终止自身进程。&lt;/p&gt;
+
+&lt;p&gt;完&lt;/p&gt;
+
+&lt;hr /&gt;
+
+&lt;hr /&gt;
+
+</description>
+				<pubDate>Fri, 05 Sep 2014 13:11:00 +0800</pubDate>
+				<link>http://localhost:4000/erlang/2014/09/05/Erlang-OTP_gen_superivisor.html</link>
+				<guid isPermaLink="true">http://localhost:4000/erlang/2014/09/05/Erlang-OTP_gen_superivisor.html</guid>
+			</item>
+		
+			<item>
+				<title>理解Erlang OTP gen_server行为模式</title>
+				<description>&lt;p&gt;OTP的gen_server行为模式，在《Erlang程序设计》和《Erlang/OTP并发编程实战》两本书里都主要介绍如何使用，至于其中原理提到的并不多，以下内容主要介绍工作原理，主要来自官方的文档。&lt;/p&gt;
+
+&lt;p&gt;######总览######&lt;/p&gt;
+
+&lt;p&gt;结构：&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;
+    &lt;p&gt;通用服务器模块 gen_server&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;回调模块 module(例如：my_bank.erl)&lt;/p&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;hr /&gt;
+
+&lt;p&gt;调用关系：&lt;/p&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;通用服务器模块						回调模块
+
+gen_server:start_link            ------------&amp;gt;             Module:init/1
+
+gen_server:call
+gen_server:multi_call            ------------&amp;gt;             Module:handle_call/3
+
+gen_server:cast
+gen_server_abcast                ------------&amp;gt;             Module:handle_cast/2
+
+--                               ------------&amp;gt;             Module:handle_info/2
+--                               ------------&amp;gt;             Module:terminate/2
+--                               ------------&amp;gt;             Module:code_change/3
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;当回调函数调用失败或返回错误值时，gen_server会中止。
+ gen_server不会自动跟踪退出信号。&lt;/p&gt;
+
+&lt;hr /&gt;
+
+&lt;p&gt;######gen_server函数详解######&lt;/p&gt;
+
+&lt;p&gt;下面看看各函数的参数和返回值：&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-erlang&quot; data-lang=&quot;erlang&quot;&gt;&lt;span class=&quot;nf&quot;&gt;start_link&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;Module&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;Args&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;Options&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;-&amp;gt;&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;Result&lt;/span&gt;
+&lt;span class=&quot;nf&quot;&gt;start_link&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;ServerName&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;Module&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;Args&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;Options&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;-&amp;gt;&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;Result&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;参数类型：&lt;/p&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;ServerName = {local, Name}  %% 在本地将gen_server注册为Name
+| {global, GlobalName}　　   %% 注册全局名称GlobalName
+| {via, Module, ViaName}    %% 使用模块所代表的注册入口进行注册
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;其中：&lt;/p&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;Module 为原子(atom)， Args为数据项(term)， Options是由选项构成的列表[Option]，
+可取的值为：
+{debug, Dbgs}         %% 调试
+| {timeout, time}     %% 设置超时
+| {spawn_opt, Sopts}  %% 将Sopts选项列表传递给spawn_opt，创建一个新的gen_server进程
+
+参数 Dbgs 为一个列表[Dbg]， 可能的取值如下：
+Dbg = trace | log | statistics | {Log_to_file, FileName} | {install, {Func, Function}}
+
+Sopts = [term()]
+
+start_link可能的返回值如下：
+{ok, Pid} | ignore | {error, Error}
+其中Pid为进程id(pid())
+失败时，Error的取值为
+{already_started, Pid}  %% 进程已启动
+| term()
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;前面已经说过，gen_server:start_link会调用回调模块的init/1函数，该函数在出错时会返回{error, Reason}.&lt;/p&gt;
+
+&lt;p&gt;另一种启动方式是&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-erlang&quot; data-lang=&quot;erlang&quot;&gt;&lt;span class=&quot;nf&quot;&gt;start&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;Module&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;Args&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;Options&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;-&amp;gt;&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;Result&lt;/span&gt;
+&lt;span class=&quot;nf&quot;&gt;start&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;ServerName&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;Module&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;Args&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;Options&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;-&amp;gt;&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;Result&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;这两种方式的区别在于: start_link创建的进程将作为监控树的一部分；而start创建的进程则作为一个独立的gen_server进程，它没有相应的监督者。 深入内容请参阅监督者行为模式的相关内容。&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-erlang&quot; data-lang=&quot;erlang&quot;&gt;&lt;span class=&quot;nf&quot;&gt;call&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;ServerRef&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;Request&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;-&amp;gt;&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;Reply&lt;/span&gt;
+&lt;span class=&quot;nf&quot;&gt;call&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;ServerRef&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;Request&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;Timeout&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;-&amp;gt;&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;Reply&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;call函数会通过向gen_server的ServerRef发送请求进行同步调用，也就是说发送消息后该函数会等待直到收到回应或超时。gen_server模块会调用回调函数 Module:handle_call/3 来处理请求。&lt;/p&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;ServerRef可以取以下值：
+
+- Name, 当gen_server在本地注册时
+- {Name, Node}, 当gen_server全局注册时
+- {via, Module, ViaName}, 当gen_server通过可选的进程注册入口注册时
+
+Request可以是任意Erlang数据项，它会被作为参数传递给 Module:handle_call/3.
+
+参数Timeout代表超时的时间，以毫秒为单位，取任意大于0的整数，或者infinity表示永不超时.
+
+返回值 Reply 由回调函数 handle_call/3定义.
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-erlang&quot; data-lang=&quot;erlang&quot;&gt;&lt;span class=&quot;nf&quot;&gt;cast&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;ServerRef&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;Request&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;-&amp;gt;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;ok&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;cast函数与call类似，其区别是call进行同步调用，而cast则是异步调用，即cast将立即返回，不论目标节点或通用服务器是否存在。其参数的类型也和call相同。&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-erlang&quot; data-lang=&quot;erlang&quot;&gt;&lt;span class=&quot;nf&quot;&gt;reply&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;Client&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;Reply&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;-&amp;gt;&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;Result&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;当回应无法在Module:handle_call/3中定义时，reply会向调用call或multi_call函数的客户端明确发送一个返回消息。&lt;/p&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;Client必须是想回调函数提供的From参数
+Reply = term()   %% Reply是Erlang数据项
+Result = term()  %% Result是Erlang数据项
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-erlang&quot; data-lang=&quot;erlang&quot;&gt;&lt;span class=&quot;nf&quot;&gt;enter_loop&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;Module&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;Options&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;State&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;nf&quot;&gt;enter_loop&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;Module&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;Options&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;State&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;ServerName&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;nf&quot;&gt;enter_loop&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;Module&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;Options&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;State&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;Timeout&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;enter_loop函数在通用服务器中调用已存在的进程，此函数不返回任何值。调用的进程将会进入通用服务器的接收消息循环中并成为一个通用服务器。其中参数与前面介绍函数中同名参数类型相同，此函数通常在比gen_server行为模式所提供的初始化更加复杂的情况下使用。&lt;/p&gt;
+
+&lt;hr /&gt;
+
+&lt;p&gt;######回调函数######&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-erlang&quot; data-lang=&quot;erlang&quot;&gt;&lt;span class=&quot;nv&quot;&gt;Modult&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;init&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;Args&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;-&amp;gt;&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;Result&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;gen_server:start或gen_server:start_link函数将会调用此函数进行初始化操作。其参数类型如下&lt;/p&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;Args = term()  %% 启动函数所需的参数
+Result = {ok, State} | {ok, State, Timeout} | {ok, State, hibernate} | {stop, Reason} | ignore
+State = term()
+Timeout = int() &amp;gt;= 0 | infinity
+Reason = term()
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;其中hibernate参数表示进程将会进入休眠状态等待下一条消息到来(调用 proc_lib:hibernate/3)。
+如果初始化失败，将会返回{ok, Reason}。&lt;/p&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;注： init/1 函数返回值{ok, State}中的State即进程状态实际上是一个LoopData，可以为任何值，
+包括记录(-reocrd), ets表， 字典(dict)等， 该值将在各函数之间作为参数传递表示系统状态。
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-erlang&quot; data-lang=&quot;erlang&quot;&gt;&lt;span class=&quot;nv&quot;&gt;Module&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;handle_call&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;Request&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;From&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;State&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;-&amp;gt;&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;Result&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;gen_server:call或gen_server:multi_call将会调用此函数来处理请求。其中参数类型：&lt;/p&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;Request = term()
+From = {pid(), Tag}
+State = term()
+Result = {reply, Reply, NewState} | {reply, Reply, NewState, Timeout} 
+| {reply, Reply, NewState, hibernate} | {noreply, NewState, Timeout} 
+| {noreply, NewState, hibernate} | {stop, Reason, Reply, NewState} 
+| {stop, Reason, NewState}
+Reply = term()
+NewState = term()
+Timeout = int() &amp;gt;= 0 | infinity
+Reason = term()
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;当此函数返回{reply, …}时，响应Reply将会发送给From参数所指的进程；返回{noreply, …}时，gen_server将会以新状态NewState继续执行，如果需要返回响应，则必须显式调用gen_server:reply/2。
+返回{stop, Reason, Reply, NewState}时，函数会把Reply返回给From的进程，{stop, Reason, NewState}则需要明确调用gen_server:reply/2返回。然后gen_server会调用Module:terminate(Reason, NewState}。&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-erlang&quot; data-lang=&quot;erlang&quot;&gt;&lt;span class=&quot;nv&quot;&gt;Module&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;handle_cast&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;Request&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;State&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;-&amp;gt;&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;Result&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;如前所述，gen_server:cast/2 或 gen_server:abcast/2, 3将会调用此函数来处理发来的请求。其参数与handle_call中相似。&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-erlang&quot; data-lang=&quot;erlang&quot;&gt;&lt;span class=&quot;nv&quot;&gt;Module&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;handle_info&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;Info&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;State&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;-&amp;gt;&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;Result&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;gen_server收到同步和异步以外的消息或系统消息以及超时的情况下会调用此函数，其参数即返回如下：&lt;/p&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;Info = timeout | term()
+State = term()
+Result = {noreply, NewState} | {noreply, NewState, Timeout} 
+| {noreply, NewState, hibernate} | {stop, Reason, NewState}
+NewState = term()
+Timeout = int() &amp;gt;= 0 | infinity
+Reason = normal | term()
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-erlang&quot; data-lang=&quot;erlang&quot;&gt;&lt;span class=&quot;nv&quot;&gt;Module&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;terminate&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;Reason&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;State&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;gen_server将要终止时会调用此函数，它的工作与Module:init/1相反，同时进行其他必要的清理工作。其参数：&lt;/p&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;Reason = normal  %% 正常终止
+| shutdown %% 当设置了跟踪退出信号 或 监督者子进程定义了特定的整数超时值时
+| {shutdown, term()}
+| term()
+State = term()
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;任何 normal, shutdown, {shutdown, Term} 以外原因出现时，gen_server都会假定出错并用error_logger:format/2报告错误。&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-erlang&quot; data-lang=&quot;erlang&quot;&gt;&lt;span class=&quot;nv&quot;&gt;Module&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;code_change&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;OldVsn&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;State&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;Extra&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;-&amp;gt;&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;ok&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;NewState&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;|&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;error&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;Reason&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;当版本更新时会使用此函数进行模块热替换，其中参数比较简单：
+	OldVsn = Vsn | {down, Vsn}
+		Vsn = term()
+	State = NewState = term()
+	Extra = term()
+	Reason = term()&lt;/p&gt;
+
+&lt;p&gt;成功时此函数会返回更新后的内部状态，如果由于某种原因出错，升级将会失败并回滚到之前状态。&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-erlang&quot; data-lang=&quot;erlang&quot;&gt;&lt;span class=&quot;nv&quot;&gt;Module&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;format_status&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;Opt&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;PDict&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;State&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;])&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;-&amp;gt;&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;Statue&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;此函数是可选的，当请求服务器状态或异常终止并记录错误日志是gen_server进程会调用它。其参数如下：&lt;/p&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;Opt = normal | terminate
+PDict = [{Key, Value}]
+State = term()
+Status = term()
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;PDict是gen_server进程字典的当前值，State是gen_server的内部状态。&lt;/p&gt;
+
+&lt;hr /&gt;
+
+&lt;p&gt;######小结######&lt;/p&gt;
+
+&lt;p&gt;综上所述，gen_server行为模式的基本流程如下：
+回调模块的start调用gen_server:start_link（或gen_server:start）来启动服务器，并进入主循环，在回调模块的接口函数（处理具体的业务逻辑）中调用gen_server的call或cast来处理请求，在gen_server的call和cast中进一步调用回调模块中的handle_call和handle_cast来执行具体的业务逻辑处理，回调模块的terminate来终止进程。&lt;/p&gt;
+
+&lt;p&gt;其中通用服务器模块和回调模块的接口函数在上面做了简单说明，具体各个函数内部细节如何实现以及调用了哪些相关库函数请查阅官方文档。&lt;/p&gt;
+
+&lt;p&gt;完&lt;/p&gt;
+
+</description>
+				<pubDate>Fri, 05 Sep 2014 13:11:00 +0800</pubDate>
+				<link>http://localhost:4000/erlang/2014/09/05/Erlang-OTP.html</link>
+				<guid isPermaLink="true">http://localhost:4000/erlang/2014/09/05/Erlang-OTP.html</guid>
+			</item>
+		
+	</channel>
+</rss>

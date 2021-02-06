@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <meta charset='utf-8'>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="/assets/css/style.css?v=0e60b3399e148529e12e3724757c327084b3e895">
+
+<!-- Begin Jekyll SEO tag v2.7.1 -->
+<title>理解Erlang OTP superivisor 行为模式 | 少数派报告—-Edward’s Webblog</title>
+<meta name="generator" content="Jekyll v3.8.6" />
+<meta property="og:title" content="理解Erlang OTP superivisor 行为模式" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="本文介绍OTP行为模式中的supervisor行为，即监督模式，此行为模式主要用于监督和管理服务器，在服务器崩溃后重启进程。 本文介绍监督者模式的原理和结构，具体示例代码请参考官方文档和《Erlang/OTP并发实战》一书。" />
+<meta property="og:description" content="本文介绍OTP行为模式中的supervisor行为，即监督模式，此行为模式主要用于监督和管理服务器，在服务器崩溃后重启进程。 本文介绍监督者模式的原理和结构，具体示例代码请参考官方文档和《Erlang/OTP并发实战》一书。" />
+<link rel="canonical" href="http://localhost:4000/erlang/2014/09/05/Erlang-OTP_gen_superivisor.html" />
+<meta property="og:url" content="http://localhost:4000/erlang/2014/09/05/Erlang-OTP_gen_superivisor.html" />
+<meta property="og:site_name" content="少数派报告—-Edward’s Webblog" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2014-09-05T13:11:00+08:00" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="理解Erlang OTP superivisor 行为模式" />
+<script type="application/ld+json">
+{"@type":"BlogPosting","url":"http://localhost:4000/erlang/2014/09/05/Erlang-OTP_gen_superivisor.html","headline":"理解Erlang OTP superivisor 行为模式","dateModified":"2014-09-05T13:11:00+08:00","datePublished":"2014-09-05T13:11:00+08:00","mainEntityOfPage":{"@type":"WebPage","@id":"http://localhost:4000/erlang/2014/09/05/Erlang-OTP_gen_superivisor.html"},"description":"本文介绍OTP行为模式中的supervisor行为，即监督模式，此行为模式主要用于监督和管理服务器，在服务器崩溃后重启进程。 本文介绍监督者模式的原理和结构，具体示例代码请参考官方文档和《Erlang/OTP并发实战》一书。","@context":"https://schema.org"}</script>
+<!-- End Jekyll SEO tag -->
+
+  </head>
+
+  <body>
+
+    <header>
+      <div class="container">
+        <a id="a-title" href="/">
+          <h1>少数派报告----Edward's Webblog</h1>
+        </a>
+        <h2>Some raw thought.</h2>
+
+        <section id="downloads">
+          
+            <a href="https://github.com/EdwardYuan/EdwardYuan.github.io/zipball/gh-pages" class="btn">Download as .zip</a>
+            <a href="https://github.com/EdwardYuan/EdwardYuan.github.io/tarball/gh-pages" class="btn">Download as .tar.gz</a>
+          
+          <a href="https://github.com/EdwardYuan/EdwardYuan.github.io" class="btn btn-github"><span class="icon"></span>View on GitHub</a>
+        </section>
+      </div>
+    </header>
+
+    <div class="container">
+      <section id="main_content">
+        <small>5 September 2014</small>
+<h1>理解Erlang OTP superivisor 行为模式</h1>
+
+<p class="view">by </p>
+
+<p>本文介绍OTP行为模式中的supervisor行为，即监督模式，此行为模式主要用于监督和管理服务器，在服务器崩溃后重启进程。 本文介绍监督者模式的原理和结构，具体示例代码请参考官方文档和《Erlang/OTP并发实战》一书。</p>
+
+<hr />
+
+<h5 id="进程树结构">进程树结构</h5>
+
+<p><img src="/images/gen_supervisor.png" class="left" width="700" /></p>
+
+<hr />
+
+<h5 id="监督者调用结构">监督者调用结构</h5>
+
+<p>module:start_link/0  —&gt;  supervisor:start_link/3  —&gt;  module:init/1.</p>
+
+<p>其中 supervisor:start_link/3为如下形式：</p>
+
+<figure class="highlight"><pre><code class="language-erlang" data-lang="erlang"><span class="nn">supervisor</span><span class="p">:</span><span class="nf">start_link</span><span class="p">({</span><span class="n">local</span><span class="p">,</span> <span class="nv">Name</span><span class="p">},</span> <span class="nv">Module</span><span class="p">,</span> <span class="nv">Args</span><span class="p">);</span>
+<span class="err">或</span>
+<span class="nn">supervisor</span><span class="p">:</span><span class="nf">start_link</span><span class="p">({</span><span class="n">global</span><span class="p">,</span> <span class="nv">Name</span><span class="p">},</span> <span class="nv">Module</span><span class="p">,</span> <span class="nv">Args</span><span class="p">).</span></code></pre></figure>
+
+<p>该函数创建一个新的监督者进程。
+其中参数如下：</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>{local, Name} 和 {global, Name} 与 gen_server行为模式中意义相同。
+Module %% 为监督者模块名
+Args %% 传入参数
+</code></pre></div></div>
+
+<p>新的监督者进程将调用监督者模块中的module:init([])函数以期返回{ok, StartSpec}.</p>
+
+<p>init形式如下：</p>
+
+<figure class="highlight"><pre><code class="language-erlang" data-lang="erlang"><span class="nf">init</span><span class="p">(...)</span> <span class="o">-&gt;</span>
+	<span class="p">{</span><span class="n">ok</span><span class="p">,</span> <span class="p">{</span> <span class="p">{</span><span class="nv">RestartStrategy</span><span class="p">,</span> <span class="nv">MaxR</span><span class="p">,</span> <span class="nv">MaxT</span><span class="p">},</span> <span class="p">[</span><span class="nv">ChildSpec</span><span class="p">,</span> <span class="p">...]</span> <span class="p">}</span> <span class="p">}.</span></code></pre></figure>
+
+<p>例如：</p>
+
+<figure class="highlight"><pre><code class="language-erlang" data-lang="erlang"><span class="nf">init</span><span class="p">(_</span><span class="nv">Args</span><span class="p">)</span> <span class="o">-&gt;</span>
+	<span class="p">{</span><span class="n">ok</span><span class="p">,</span> <span class="p">{</span><span class="n">one_for_one</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">60</span><span class="p">},</span> <span class="p">[{</span><span class="n">ch3</span><span class="p">,</span> <span class="p">{</span><span class="n">ch3</span><span class="p">,</span> <span class="n">start_link</span><span class="p">,</span> <span class="p">[]},</span>
+	<span class="n">permanent</span><span class="p">,</span> <span class="n">brutal_kill</span><span class="p">,</span> <span class="n">worker</span><span class="p">,</span> <span class="p">[</span><span class="n">ch3</span><span class="p">]}]}.</span></code></pre></figure>
+
+<p>参数说明：</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>MaxR %% 在MaxT时间内最大重启次数
+MaxT %% 限定时间，单位为秒
+</code></pre></div></div>
+
+<p>最大重启频率：</p>
+
+<p>如果在过去MaxT秒内重启次数超过了MaxR，监督者将会终止所有子进程然后终止自身进程。
+当监督者进程终止时，下一优先级的监督者可能做如下操作：</p>
+<ul>
+  <li>重启监督者</li>
+  <li>终止监督者</li>
+  <li>终止自身进程</li>
+</ul>
+
+<p>重启策略:</p>
+
+<p>在init/1 中返回值 RestartStrategy 表示监督者重启策略，其可能取值如下：</p>
+<ul>
+  <li>one_for_one %% 当一个进程终止时，只有它自身会被重启</li>
+  <li>one_for_all %% 当一个子进程终止时，所有子进程（包括该子进程本身）都将会被重启</li>
+  <li>rest_for_one %% 当一个子进程终止时，所有“剩余的”子进程和它本身将本重启</li>
+</ul>
+
+<p>子进程规范：</p>
+
+<p>子进程规范是一个元组，用来描述受监督的进程。该元组结构如下：</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>{Id, StartFunc, Restart, Shutdown, Type, Modules}
+</code></pre></div></div>
+
+<p>其中参数：</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Id %% 监督者在系统内部识别子进程规范的名称，一般使用模块名
+StartFunc %% 用于启动进程的三元组 {M, F, A}
+Restart %% 指定子进程何时被重启
+	取值为：
+	- permanet %% 始终重启
+	- temporary %% 永不重启
+	- transient %% 非正常终止时重启
+Shutdown %% 指明如何终止进程
+	取值为：
+	- brutal_kill %% 调用 exit(Child, kill)立即终止子进程
+	- 整型数值 %% 监督者告知子进程调用 exit(Child, shutdown)来终止，
+	  之后等待退出信号返回，如果在指定时间内未收到退出信号，则调用exit(Child, kill)
+	- infinity %% 通常表示子进程也是一个监督进程的情况，监督者将给子进程留出足够的时间来终止
+Type %% 表示子进程是监督者(supervisior)还是工作者(worker)
+Modules %% 所依赖模块名称的列表
+</code></pre></div></div>
+
+<hr />
+
+<p>添加子进程：</p>
+
+<p>我们可以通过调用以下函数来实现向一个静态监督树中田间动态子进程：</p>
+
+<figure class="highlight"><pre><code class="language-erlang" data-lang="erlang"><span class="nn">supervisor</span><span class="p">:</span><span class="nf">start_child</span><span class="p">(</span><span class="nv">Sup</span><span class="p">,</span> <span class="nv">ChildSpec</span><span class="p">).</span></code></pre></figure>
+
+<p>其中：
+	sup %% 进程pid或监督者名称
+	ChildSpec %% 子进程规范</p>
+
+<p>注意：当监督者进程消亡并重启后，所有动态添加的子进程将会丢失。</p>
+
+<p>终止子进程：</p>
+
+<p>调用以下函数可以终止任何动态或静态的子进程：</p>
+
+<figure class="highlight"><pre><code class="language-erlang" data-lang="erlang"><span class="nn">supervisor</span><span class="p">:</span><span class="nf">terminate_child</span><span class="p">(</span><span class="nv">Sup</span><span class="p">,</span> <span class="nv">Id</span><span class="p">).</span></code></pre></figure>
+
+<p>终止后的子进程将会有以下函数删除：</p>
+
+<figure class="highlight"><pre><code class="language-erlang" data-lang="erlang"><span class="nn">supervisor</span><span class="p">:</span><span class="nf">delete_child</span><span class="p">(</span><span class="nv">Sup</span><span class="p">,</span> <span class="nv">Id</span><span class="p">).</span></code></pre></figure>
+
+<p>其中：</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Id %% 指在子进程规范中定义的Id
+</code></pre></div></div>
+
+<p>同样，删除的动态添加的子进程将在监督者重启后丢失。</p>
+
+<hr />
+
+<p>Simple_One_For_One 监督者：
+当监督者的子进程重启策略设置为 simple_one_for_one时，所有子进程都将是动态添加的。此时，当监督者启动时不会启动任何子进程，所有子进程都将由以下函数动态添加：</p>
+
+<figure class="highlight"><pre><code class="language-erlang" data-lang="erlang"><span class="nn">supervisor</span><span class="p">:</span><span class="nf">start_child</span><span class="p">(</span><span class="nv">Sup</span><span class="p">,</span> <span class="nv">List</span><span class="p">).</span></code></pre></figure>
+
+<hr />
+
+<p>应用的终止：</p>
+
+<p>监督者是监督树的一部分，所以它将会自动被其监督者终止。 关闭时，监督者将会按照启动子进程的逆序根据关闭规范终止所有子进程，最后终止自身进程。</p>
+
+<p>完</p>
+
+<hr />
+
+<hr />
+
+
+
+
+  <small>tags: <em></em></small>
+
+
+      </section>
+    </div>
+
+    
+  </body>
+</html>

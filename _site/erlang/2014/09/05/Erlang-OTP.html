@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <meta charset='utf-8'>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="/assets/css/style.css?v=0e60b3399e148529e12e3724757c327084b3e895">
+
+<!-- Begin Jekyll SEO tag v2.7.1 -->
+<title>理解Erlang OTP gen_server行为模式 | 少数派报告—-Edward’s Webblog</title>
+<meta name="generator" content="Jekyll v3.8.6" />
+<meta property="og:title" content="理解Erlang OTP gen_server行为模式" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="OTP的gen_server行为模式，在《Erlang程序设计》和《Erlang/OTP并发编程实战》两本书里都主要介绍如何使用，至于其中原理提到的并不多，以下内容主要介绍工作原理，主要来自官方的文档。" />
+<meta property="og:description" content="OTP的gen_server行为模式，在《Erlang程序设计》和《Erlang/OTP并发编程实战》两本书里都主要介绍如何使用，至于其中原理提到的并不多，以下内容主要介绍工作原理，主要来自官方的文档。" />
+<link rel="canonical" href="http://localhost:4000/erlang/2014/09/05/Erlang-OTP.html" />
+<meta property="og:url" content="http://localhost:4000/erlang/2014/09/05/Erlang-OTP.html" />
+<meta property="og:site_name" content="少数派报告—-Edward’s Webblog" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2014-09-05T13:11:00+08:00" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="理解Erlang OTP gen_server行为模式" />
+<script type="application/ld+json">
+{"@type":"BlogPosting","url":"http://localhost:4000/erlang/2014/09/05/Erlang-OTP.html","headline":"理解Erlang OTP gen_server行为模式","dateModified":"2014-09-05T13:11:00+08:00","datePublished":"2014-09-05T13:11:00+08:00","mainEntityOfPage":{"@type":"WebPage","@id":"http://localhost:4000/erlang/2014/09/05/Erlang-OTP.html"},"description":"OTP的gen_server行为模式，在《Erlang程序设计》和《Erlang/OTP并发编程实战》两本书里都主要介绍如何使用，至于其中原理提到的并不多，以下内容主要介绍工作原理，主要来自官方的文档。","@context":"https://schema.org"}</script>
+<!-- End Jekyll SEO tag -->
+
+  </head>
+
+  <body>
+
+    <header>
+      <div class="container">
+        <a id="a-title" href="/">
+          <h1>少数派报告----Edward's Webblog</h1>
+        </a>
+        <h2>Some raw thought.</h2>
+
+        <section id="downloads">
+          
+            <a href="https://github.com/EdwardYuan/EdwardYuan.github.io/zipball/gh-pages" class="btn">Download as .zip</a>
+            <a href="https://github.com/EdwardYuan/EdwardYuan.github.io/tarball/gh-pages" class="btn">Download as .tar.gz</a>
+          
+          <a href="https://github.com/EdwardYuan/EdwardYuan.github.io" class="btn btn-github"><span class="icon"></span>View on GitHub</a>
+        </section>
+      </div>
+    </header>
+
+    <div class="container">
+      <section id="main_content">
+        <small>5 September 2014</small>
+<h1>理解Erlang OTP gen_server行为模式</h1>
+
+<p class="view">by </p>
+
+<p>OTP的gen_server行为模式，在《Erlang程序设计》和《Erlang/OTP并发编程实战》两本书里都主要介绍如何使用，至于其中原理提到的并不多，以下内容主要介绍工作原理，主要来自官方的文档。</p>
+
+<p>######总览######</p>
+
+<p>结构：</p>
+
+<ul>
+  <li>
+    <p>通用服务器模块 gen_server</p>
+  </li>
+  <li>
+    <p>回调模块 module(例如：my_bank.erl)</p>
+  </li>
+</ul>
+
+<hr />
+
+<p>调用关系：</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>通用服务器模块						回调模块
+
+gen_server:start_link            ------------&gt;             Module:init/1
+
+gen_server:call
+gen_server:multi_call            ------------&gt;             Module:handle_call/3
+
+gen_server:cast
+gen_server_abcast                ------------&gt;             Module:handle_cast/2
+
+--                               ------------&gt;             Module:handle_info/2
+--                               ------------&gt;             Module:terminate/2
+--                               ------------&gt;             Module:code_change/3
+</code></pre></div></div>
+
+<p>当回调函数调用失败或返回错误值时，gen_server会中止。
+ gen_server不会自动跟踪退出信号。</p>
+
+<hr />
+
+<p>######gen_server函数详解######</p>
+
+<p>下面看看各函数的参数和返回值：</p>
+
+<figure class="highlight"><pre><code class="language-erlang" data-lang="erlang"><span class="nf">start_link</span><span class="p">(</span><span class="nv">Module</span><span class="p">,</span> <span class="nv">Args</span><span class="p">,</span> <span class="nv">Options</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nv">Result</span>
+<span class="nf">start_link</span><span class="p">(</span><span class="nv">ServerName</span><span class="p">,</span> <span class="nv">Module</span><span class="p">,</span> <span class="nv">Args</span><span class="p">,</span> <span class="nv">Options</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nv">Result</span></code></pre></figure>
+
+<p>参数类型：</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>ServerName = {local, Name}  %% 在本地将gen_server注册为Name
+| {global, GlobalName}　　   %% 注册全局名称GlobalName
+| {via, Module, ViaName}    %% 使用模块所代表的注册入口进行注册
+</code></pre></div></div>
+
+<p>其中：</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Module 为原子(atom)， Args为数据项(term)， Options是由选项构成的列表[Option]，
+可取的值为：
+{debug, Dbgs}         %% 调试
+| {timeout, time}     %% 设置超时
+| {spawn_opt, Sopts}  %% 将Sopts选项列表传递给spawn_opt，创建一个新的gen_server进程
+
+参数 Dbgs 为一个列表[Dbg]， 可能的取值如下：
+Dbg = trace | log | statistics | {Log_to_file, FileName} | {install, {Func, Function}}
+
+Sopts = [term()]
+
+start_link可能的返回值如下：
+{ok, Pid} | ignore | {error, Error}
+其中Pid为进程id(pid())
+失败时，Error的取值为
+{already_started, Pid}  %% 进程已启动
+| term()
+</code></pre></div></div>
+
+<p>前面已经说过，gen_server:start_link会调用回调模块的init/1函数，该函数在出错时会返回{error, Reason}.</p>
+
+<p>另一种启动方式是</p>
+
+<figure class="highlight"><pre><code class="language-erlang" data-lang="erlang"><span class="nf">start</span><span class="p">(</span><span class="nv">Module</span><span class="p">,</span> <span class="nv">Args</span><span class="p">,</span> <span class="nv">Options</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nv">Result</span>
+<span class="nf">start</span><span class="p">(</span><span class="nv">ServerName</span><span class="p">,</span> <span class="nv">Module</span><span class="p">,</span> <span class="nv">Args</span><span class="p">,</span> <span class="nv">Options</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nv">Result</span></code></pre></figure>
+
+<p>这两种方式的区别在于: start_link创建的进程将作为监控树的一部分；而start创建的进程则作为一个独立的gen_server进程，它没有相应的监督者。 深入内容请参阅监督者行为模式的相关内容。</p>
+
+<figure class="highlight"><pre><code class="language-erlang" data-lang="erlang"><span class="nf">call</span><span class="p">(</span><span class="nv">ServerRef</span><span class="p">,</span> <span class="nv">Request</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nv">Reply</span>
+<span class="nf">call</span><span class="p">(</span><span class="nv">ServerRef</span><span class="p">,</span> <span class="nv">Request</span><span class="p">,</span> <span class="nv">Timeout</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nv">Reply</span></code></pre></figure>
+
+<p>call函数会通过向gen_server的ServerRef发送请求进行同步调用，也就是说发送消息后该函数会等待直到收到回应或超时。gen_server模块会调用回调函数 Module:handle_call/3 来处理请求。</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>ServerRef可以取以下值：
+
+- Name, 当gen_server在本地注册时
+- {Name, Node}, 当gen_server全局注册时
+- {via, Module, ViaName}, 当gen_server通过可选的进程注册入口注册时
+
+Request可以是任意Erlang数据项，它会被作为参数传递给 Module:handle_call/3.
+
+参数Timeout代表超时的时间，以毫秒为单位，取任意大于0的整数，或者infinity表示永不超时.
+
+返回值 Reply 由回调函数 handle_call/3定义.
+</code></pre></div></div>
+
+<figure class="highlight"><pre><code class="language-erlang" data-lang="erlang"><span class="nf">cast</span><span class="p">(</span><span class="nv">ServerRef</span><span class="p">,</span> <span class="nv">Request</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ok</span></code></pre></figure>
+
+<p>cast函数与call类似，其区别是call进行同步调用，而cast则是异步调用，即cast将立即返回，不论目标节点或通用服务器是否存在。其参数的类型也和call相同。</p>
+
+<figure class="highlight"><pre><code class="language-erlang" data-lang="erlang"><span class="nf">reply</span><span class="p">(</span><span class="nv">Client</span><span class="p">,</span> <span class="nv">Reply</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nv">Result</span><span class="p">.</span></code></pre></figure>
+
+<p>当回应无法在Module:handle_call/3中定义时，reply会向调用call或multi_call函数的客户端明确发送一个返回消息。</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Client必须是想回调函数提供的From参数
+Reply = term()   %% Reply是Erlang数据项
+Result = term()  %% Result是Erlang数据项
+</code></pre></div></div>
+
+<figure class="highlight"><pre><code class="language-erlang" data-lang="erlang"><span class="nf">enter_loop</span><span class="p">(</span><span class="nv">Module</span><span class="p">,</span> <span class="nv">Options</span><span class="p">,</span> <span class="nv">State</span><span class="p">)</span>
+<span class="nf">enter_loop</span><span class="p">(</span><span class="nv">Module</span><span class="p">,</span> <span class="nv">Options</span><span class="p">,</span> <span class="nv">State</span><span class="p">,</span> <span class="nv">ServerName</span><span class="p">)</span>
+<span class="nf">enter_loop</span><span class="p">(</span><span class="nv">Module</span><span class="p">,</span> <span class="nv">Options</span><span class="p">,</span> <span class="nv">State</span><span class="p">,</span> <span class="nv">Timeout</span><span class="p">)</span></code></pre></figure>
+
+<p>enter_loop函数在通用服务器中调用已存在的进程，此函数不返回任何值。调用的进程将会进入通用服务器的接收消息循环中并成为一个通用服务器。其中参数与前面介绍函数中同名参数类型相同，此函数通常在比gen_server行为模式所提供的初始化更加复杂的情况下使用。</p>
+
+<hr />
+
+<p>######回调函数######</p>
+
+<figure class="highlight"><pre><code class="language-erlang" data-lang="erlang"><span class="nv">Modult</span><span class="p">:</span><span class="nf">init</span><span class="p">(</span><span class="nv">Args</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nv">Result</span></code></pre></figure>
+
+<p>gen_server:start或gen_server:start_link函数将会调用此函数进行初始化操作。其参数类型如下</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Args = term()  %% 启动函数所需的参数
+Result = {ok, State} | {ok, State, Timeout} | {ok, State, hibernate} | {stop, Reason} | ignore
+State = term()
+Timeout = int() &gt;= 0 | infinity
+Reason = term()
+</code></pre></div></div>
+
+<p>其中hibernate参数表示进程将会进入休眠状态等待下一条消息到来(调用 proc_lib:hibernate/3)。
+如果初始化失败，将会返回{ok, Reason}。</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>注： init/1 函数返回值{ok, State}中的State即进程状态实际上是一个LoopData，可以为任何值，
+包括记录(-reocrd), ets表， 字典(dict)等， 该值将在各函数之间作为参数传递表示系统状态。
+</code></pre></div></div>
+
+<figure class="highlight"><pre><code class="language-erlang" data-lang="erlang"><span class="nv">Module</span><span class="p">:</span><span class="nf">handle_call</span><span class="p">(</span><span class="nv">Request</span><span class="p">,</span> <span class="nv">From</span><span class="p">,</span> <span class="nv">State</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nv">Result</span></code></pre></figure>
+
+<p>gen_server:call或gen_server:multi_call将会调用此函数来处理请求。其中参数类型：</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Request = term()
+From = {pid(), Tag}
+State = term()
+Result = {reply, Reply, NewState} | {reply, Reply, NewState, Timeout} 
+| {reply, Reply, NewState, hibernate} | {noreply, NewState, Timeout} 
+| {noreply, NewState, hibernate} | {stop, Reason, Reply, NewState} 
+| {stop, Reason, NewState}
+Reply = term()
+NewState = term()
+Timeout = int() &gt;= 0 | infinity
+Reason = term()
+</code></pre></div></div>
+
+<p>当此函数返回{reply, …}时，响应Reply将会发送给From参数所指的进程；返回{noreply, …}时，gen_server将会以新状态NewState继续执行，如果需要返回响应，则必须显式调用gen_server:reply/2。
+返回{stop, Reason, Reply, NewState}时，函数会把Reply返回给From的进程，{stop, Reason, NewState}则需要明确调用gen_server:reply/2返回。然后gen_server会调用Module:terminate(Reason, NewState}。</p>
+
+<figure class="highlight"><pre><code class="language-erlang" data-lang="erlang"><span class="nv">Module</span><span class="p">:</span><span class="nf">handle_cast</span><span class="p">(</span><span class="nv">Request</span><span class="p">,</span> <span class="nv">State</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nv">Result</span><span class="p">.</span></code></pre></figure>
+
+<p>如前所述，gen_server:cast/2 或 gen_server:abcast/2, 3将会调用此函数来处理发来的请求。其参数与handle_call中相似。</p>
+
+<figure class="highlight"><pre><code class="language-erlang" data-lang="erlang"><span class="nv">Module</span><span class="p">:</span><span class="nf">handle_info</span><span class="p">(</span><span class="nv">Info</span><span class="p">,</span> <span class="nv">State</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nv">Result</span><span class="p">.</span></code></pre></figure>
+
+<p>gen_server收到同步和异步以外的消息或系统消息以及超时的情况下会调用此函数，其参数即返回如下：</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Info = timeout | term()
+State = term()
+Result = {noreply, NewState} | {noreply, NewState, Timeout} 
+| {noreply, NewState, hibernate} | {stop, Reason, NewState}
+NewState = term()
+Timeout = int() &gt;= 0 | infinity
+Reason = normal | term()
+</code></pre></div></div>
+
+<figure class="highlight"><pre><code class="language-erlang" data-lang="erlang"><span class="nv">Module</span><span class="p">:</span><span class="nf">terminate</span><span class="p">(</span><span class="nv">Reason</span><span class="p">,</span> <span class="nv">State</span><span class="p">)</span></code></pre></figure>
+
+<p>gen_server将要终止时会调用此函数，它的工作与Module:init/1相反，同时进行其他必要的清理工作。其参数：</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Reason = normal  %% 正常终止
+| shutdown %% 当设置了跟踪退出信号 或 监督者子进程定义了特定的整数超时值时
+| {shutdown, term()}
+| term()
+State = term()
+</code></pre></div></div>
+
+<p>任何 normal, shutdown, {shutdown, Term} 以外原因出现时，gen_server都会假定出错并用error_logger:format/2报告错误。</p>
+
+<figure class="highlight"><pre><code class="language-erlang" data-lang="erlang"><span class="nv">Module</span><span class="p">:</span><span class="nf">code_change</span><span class="p">(</span><span class="nv">OldVsn</span><span class="p">,</span> <span class="nv">State</span><span class="p">,</span> <span class="nv">Extra</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="p">{</span><span class="n">ok</span><span class="p">,</span> <span class="nv">NewState</span><span class="p">}</span> <span class="p">|</span> <span class="p">{</span><span class="n">error</span><span class="p">,</span> <span class="nv">Reason</span><span class="p">}</span></code></pre></figure>
+
+<p>当版本更新时会使用此函数进行模块热替换，其中参数比较简单：
+	OldVsn = Vsn | {down, Vsn}
+		Vsn = term()
+	State = NewState = term()
+	Extra = term()
+	Reason = term()</p>
+
+<p>成功时此函数会返回更新后的内部状态，如果由于某种原因出错，升级将会失败并回滚到之前状态。</p>
+
+<figure class="highlight"><pre><code class="language-erlang" data-lang="erlang"><span class="nv">Module</span><span class="p">:</span><span class="nf">format_status</span><span class="p">(</span><span class="nv">Opt</span><span class="p">,</span> <span class="p">[</span><span class="nv">PDict</span><span class="p">,</span> <span class="nv">State</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nv">Statue</span><span class="p">.</span></code></pre></figure>
+
+<p>此函数是可选的，当请求服务器状态或异常终止并记录错误日志是gen_server进程会调用它。其参数如下：</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Opt = normal | terminate
+PDict = [{Key, Value}]
+State = term()
+Status = term()
+</code></pre></div></div>
+
+<p>PDict是gen_server进程字典的当前值，State是gen_server的内部状态。</p>
+
+<hr />
+
+<p>######小结######</p>
+
+<p>综上所述，gen_server行为模式的基本流程如下：
+回调模块的start调用gen_server:start_link（或gen_server:start）来启动服务器，并进入主循环，在回调模块的接口函数（处理具体的业务逻辑）中调用gen_server的call或cast来处理请求，在gen_server的call和cast中进一步调用回调模块中的handle_call和handle_cast来执行具体的业务逻辑处理，回调模块的terminate来终止进程。</p>
+
+<p>其中通用服务器模块和回调模块的接口函数在上面做了简单说明，具体各个函数内部细节如何实现以及调用了哪些相关库函数请查阅官方文档。</p>
+
+<p>完</p>
+
+
+
+
+  <small>tags: <em></em></small>
+
+
+      </section>
+    </div>
+
+    
+  </body>
+</html>
