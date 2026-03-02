@@ -1,0 +1,281 @@
+### AI时代，重拾UML
+
+曾经，IBM的Rational Rose作为UML的标准软件风靡一时。UML（统一建模语言）也一度是程序员必备技能。但随着技术的发展和迭代，敏捷开发等新的工程方法的普及，UML逐渐失去了它的重要性，甚至现在开发者们已经很少提及。日常还在使用的也只剩下时序图、类图少数几种。新的编程语言并不完全遵循曾经Java或者C#的面向对象范式（虽然艾伦·凯最初的OO范式也并不是后来流行的那个样子），取而代之的是更灵活的高级编程语言比如js，go，rust等等。在这诸多因素的推动下，UML不断边缘化。
+
+今天重提UML并不是为了怀旧。近一年来，Vibe Coding蓬勃发展，Claude Code, Codex, Cursor, Anti Gravitity以及Trae、千问等等一众AI编程助手层出不穷，不断更新。这给了很多非程序员带来了便利，不懂技术也可以写代码开发应用了。但也正是因为不懂代码，纯靠AI写出来的东西更像是玩具，冗余代码众多、稳定性差，容错率低，非功能需求几乎不考虑，成了名副其实的“氛围编程”。即使是程序员使用AI编程，往往生成的代码前后逻辑混乱，结构也杂乱不堪难以维护。有人开始回到了原来的工程方法，先写详细的文档，再让AI根据文档生成代码。这样能够从一定程度上解决问题，却依然不能稳定处理。
+
+这时候，回头看看UML，似乎能够更好地在程序员和AI之间沟通。借由Mermaid这样的工具，把画好的UML图可以转化为预定义的IDL代码，我们首先画好项目的设计图，根据需求，决定图表的数量和类型，比如一个小的项目只需要类图、对象图、时序图，之后只要把Meraid代码和需求交给AI，然后就能得到清晰的代码框架，这个时候在继续根据具体的功能补全各个函数和方法，生成代码的准确性和稳定性就会大大提高。
+
+下面看一个小demo，写一个 pdf 转 png 的小工具，我们先看 Mermaid 的几张图:
+
+<img src="/images/class-diagram.png" class="left" width="700" />
+<img src="/images/object-diagram.png" class="left" width="700" />
+<img src="/images/sequence-diagram.png" class="left" width="700" />
+
+下面是 Mermaid 的代码：
+
+- 类图：
+
+```
+classDiagram
+
+class App {
+    -config: Config
+    -converter: Converter
+    +Run() error
+}
+
+class Config {
+    +InputPath: string
+    +OutputDir: string
+    +DPI: int
+    +Format: string
+    +Parse(args []string) error
+}
+
+class Converter {
+    -renderer: Renderer
+    -fileManager: FileManager
+    +Convert(config Config) error
+}
+
+class Renderer {
+    <<interface>>
+    +Render(pdfPath string, dpi int) ([]Image, error)
+}
+
+class PDFiumRenderer {
+    +Render(pdfPath string, dpi int) ([]Image, error)
+}
+
+class PopplerRenderer {
+    +Render(pdfPath string, dpi int) ([]Image, error)
+}
+
+class FileManager {
+    +SaveImages(images []Image, outputDir string, format string) error
+    +EnsureDir(path string) error
+}
+
+class Image {
+    +PageNumber: int
+    +Data: []byte
+}
+
+App --> Config
+App --> Converter
+Converter --> Renderer
+Converter --> FileManager
+Renderer <|.. PDFiumRenderer
+Renderer <|.. PopplerRenderer
+Converter --> Image
+```
+- 对象图 
+
+```
+objectDiagram
+
+object app {
+    config = config1
+    converter = converter1
+}
+
+object config1 {
+    InputPath = "test.pdf"
+    OutputDir = "./output"
+    DPI = 300
+    Format = "png"
+}
+
+object converter1 {
+    renderer = pdfiumRenderer1
+    fileManager = fileManager1
+}
+
+object pdfiumRenderer1 {
+    type = "PDFiumRenderer"
+}
+
+object fileManager1 {
+    type = "FileManager"
+}
+
+app --> config1
+app --> converter1
+converter1 --> pdfiumRenderer1
+converter1 --> fileManager1
+```
+
+- 顺序图：
+
+``` 
+sequenceDiagram
+
+participant User
+participant App
+participant Converter
+participant Renderer
+participant FileManager
+
+User->>App: Run(args)
+App->>App: Parse Config
+App->>Converter: Convert(config)
+
+Converter->>Renderer: Render(pdfPath, dpi)
+Renderer-->>Converter: []Image
+
+Converter->>FileManager: EnsureDir(outputDir)
+Converter->>FileManager: SaveImages(images, format)
+
+FileManager-->>Converter: success
+Converter-->>App: success
+App-->>User: Done
+```
+接下来用 AI 一次生成的 Python 代码：
+
+```python
+import os
+import argparse
+from abc import ABC, abstractmethod
+from dataclasses import dataclass
+from typing import List
+from PIL import Image
+import pypdfium2 as pdfium
+
+
+# =========================
+# Domain Model
+# =========================
+
+@dataclass
+class Config:
+    input_path: str
+    output_dir: str
+    dpi: int = 300
+    format: str = "png"
+
+    @staticmethod
+    def parse():
+        parser = argparse.ArgumentParser(description="PDF to Image Converter")
+        parser.add_argument("input", help="Input PDF file path")
+        parser.add_argument("-o", "--output", default="./output", help="Output directory")
+        parser.add_argument("--dpi", type=int, default=300, help="Render DPI")
+        parser.add_argument("--format", default="png", help="Output format (png/jpg)")
+
+        args = parser.parse_args()
+
+        return Config(
+            input_path=args.input,
+            output_dir=args.output,
+            dpi=args.dpi,
+            format=args.format.lower()
+        )
+
+
+@dataclass
+class ImageData:
+    page_number: int
+    image: Image.Image
+
+
+# =========================
+# Renderer Interface
+# =========================
+
+class Renderer(ABC):
+
+    @abstractmethod
+    def render(self, pdf_path: str, dpi: int) -> List[ImageData]:
+        pass
+
+
+class PDFiumRenderer(Renderer):
+
+    def render(self, pdf_path: str, dpi: int) -> List[ImageData]:
+        pdf = pdfium.PdfDocument(pdf_path)
+
+        scale = dpi / 72.0
+        images = []
+
+        for i in range(len(pdf)):
+            page = pdf[i]
+            bitmap = page.render(scale=scale)
+            pil_image = bitmap.to_pil()
+            images.append(ImageData(page_number=i + 1, image=pil_image))
+
+        return images
+
+
+# =========================
+# File Manager
+# =========================
+
+class FileManager:
+
+    def ensure_dir(self, path: str):
+        os.makedirs(path, exist_ok=True)
+
+    def save_images(self, images: List[ImageData], output_dir: str, fmt: str):
+        for img_data in images:
+            filename = os.path.join(
+                output_dir,
+                f"page_{img_data.page_number}.{fmt}"
+            )
+            img_data.image.save(filename, fmt.upper())
+
+
+# =========================
+# Converter
+# =========================
+
+class Converter:
+
+    def __init__(self, renderer: Renderer, file_manager: FileManager):
+        self.renderer = renderer
+        self.file_manager = file_manager
+
+    def convert(self, config: Config):
+        if not os.path.exists(config.input_path):
+            raise FileNotFoundError(f"Input file not found: {config.input_path}")
+
+        self.file_manager.ensure_dir(config.output_dir)
+
+        images = self.renderer.render(config.input_path, config.dpi)
+
+        self.file_manager.save_images(
+            images,
+            config.output_dir,
+            config.format
+        )
+
+
+# =========================
+# Application
+# =========================
+
+class App:
+
+    def __init__(self):
+        self.config = Config.parse()
+        self.converter = Converter(
+            renderer=PDFiumRenderer(),
+            file_manager=FileManager()
+        )
+
+    def run(self):
+        try:
+            self.converter.convert(self.config)
+            print("Conversion completed successfully.")
+        except Exception as e:
+            print(f"Error: {e}")
+
+
+# =========================
+# Entry
+# =========================
+
+if __name__ == "__main__":
+    app = App()
+    app.run()
+```
+以上程序安装好第三方库之后一次跑通。
