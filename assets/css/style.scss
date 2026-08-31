@@ -2,3 +2,77 @@
 ---
 
 @import 'jekyll-theme-hacker';
+
+.site-layout {
+  display: grid;
+  grid-template-columns: 260px minmax(0, 1fr);
+  gap: 40px;
+  max-width: 1320px;
+  align-items: start;
+}
+
+.post-sidebar {
+  position: sticky;
+  top: 24px;
+  max-height: calc(100vh - 48px);
+  overflow-y: auto;
+  box-sizing: border-box;
+  padding: 20px;
+  border: 1px solid rgba(181, 232, 83, 0.25);
+  border-radius: 6px;
+  background: rgba(0, 0, 0, 0.2);
+  scrollbar-width: thin;
+
+  h2 { margin: 0 0 4px; font-size: 20px; }
+
+  .post-navigation-count {
+    margin: 0 0 20px;
+    color: #aaa;
+    font-size: 12px;
+  }
+
+  summary {
+    padding: 10px 0;
+    color: #b5e853;
+    cursor: pointer;
+  }
+
+  .archive-year + .archive-year {
+    border-top: 1px dashed rgba(181, 232, 83, 0.2);
+  }
+
+  .archive-count { color: #aaa; font-size: 12px; margin-left: 8px; }
+  .archive-month { margin: 4px 0 16px 12px; }
+  h3 { margin: 0 0 6px; font-size: 13px; color: #aaa; }
+  ul { margin: 0; padding: 0; list-style: none; }
+  li { list-style: none; margin: 2px 0; }
+
+  a {
+    display: block;
+    padding: 7px 9px;
+    border-left: 2px solid transparent;
+    font-size: 13px;
+    line-height: 1.6;
+    overflow-wrap: anywhere;
+    text-decoration: none;
+    text-shadow: none;
+  }
+
+  a:hover, a[aria-current="page"] {
+    color: #b5e853;
+    border-left-color: #b5e853;
+    background: rgba(181, 232, 83, 0.08);
+  }
+
+  a:focus-visible, summary:focus-visible {
+    outline: 2px solid #b5e853;
+    outline-offset: 2px;
+  }
+}
+
+.site-layout #main_content { min-width: 0; overflow-wrap: break-word; }
+
+@media (max-width: 800px) {
+  .site-layout { grid-template-columns: minmax(0, 1fr); gap: 24px; }
+  .post-sidebar { position: static; max-height: 320px; }
+}

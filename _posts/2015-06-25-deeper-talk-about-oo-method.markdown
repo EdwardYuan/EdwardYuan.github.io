@@ -1,7 +1,7 @@
 ---
 layout: post
 title:  更正，关于面向对象的进一步讨论
-date:   201５-06-25 11:05
+date:   2015-06-25 11:05
 categories: Programming
 ---
 

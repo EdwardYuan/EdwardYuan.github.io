@@ -3,3 +3,9 @@ description: Some raw thought.
 show_downloads: true
 google_analytics:
 theme: jekyll-theme-hacker
+defaults:
+  - scope:
+      path: ""
+      type: posts
+    values:
+      layout: post
