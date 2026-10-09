@@ -1,3 +1,9 @@
+---
+layout: post
+title: "Channel 为什么会慢"
+date: 2026-03-12
+---
+
 # Channel 为什么会慢
 
 最近在压测一个服务，goroutine 跑到几千个的时候，CPU 打满了但吞吐量却没有线性增长。排查了一圈，最后发现问题出在一个被大量 goroutine 共享的 channel 上。
