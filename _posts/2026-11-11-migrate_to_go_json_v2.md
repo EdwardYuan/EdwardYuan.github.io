@@ -1,7 +1,7 @@
 ---
 layout: post
 title:  "老项目怎么迁移到 Go 的 JSON v2"
-date:   2016-11-11
+date:   2026-11-11
 categories: go
 ---
 
