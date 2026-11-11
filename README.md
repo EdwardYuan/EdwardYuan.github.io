@@ -8,6 +8,21 @@
 
 ## Usage
 
+### 博客文章标题
+
+`_posts` 中的文章应在文件开头设置 YAML 元数据，`title` 填写文章的实际标题：
+
+```markdown
+---
+layout: post
+title: "了解Go 1.27 小对象内存分配的优化"
+---
+
+正文内容……
+```
+
+侧栏导航、首页和归档页均读取此处的 `title`。正文中的 Markdown 标题不会自动替代它；缺少 `title` 时，Jekyll 会从文件名生成标题。文件名仍用于文章地址，无需为了修改显示标题而重命名。
+
 To use the Hacker theme:
 
 1. Add the following to your site's `_config.yml`:
