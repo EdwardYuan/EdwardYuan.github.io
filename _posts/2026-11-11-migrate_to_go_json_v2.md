@@ -22,14 +22,8 @@ type Pet struct {
 p := Pet{Name: "Remi"}
 ```
 
-v1 输出 
-```{"name":"Remi","nicknames":null}```
-
-v2 输出 
-```{"name":"Remi","nicknames":[]}```
-
-
-`nil` map 也有类似的变化，默认从 `null` 变成 `{}`。对这个例子来说，Go 里的 `Nicknames` 仍然是 `nil`，变的是客户端收到的值。如果客户端用 `null` 表示「还没设置」，用 `[]` 表示「设置过，列表为空」，直接切换就会丢掉这个区别。需要保留原来的输出，可以给这个字段加 `format:emitnull`，也可以在编码时传 `jsonv2.FormatNilSliceAsNull(true)`。 
+v1 输出 `{"name":"Remi","nicknames":null}`，v2 输出 `{"name":"Remi","nicknames":[]}`
+而`nil` map 也有类似的变化，默认从 `null` 变成 `{}`。对这个例子来说，Go 里的 `Nicknames` 仍然是 `nil`，变的是客户端收到的值。如果客户端用 `null` 表示「还没设置」，用 `[]` 表示「设置过，列表为空」，直接切换就会丢掉这个区别。需要保留原来的输出，可以给这个字段加 `format:emitnull`，也可以在编码时传 `jsonv2.FormatNilSliceAsNull(true)`。 
 
 输入侧更容易漏掉的是大小写。上面的结构体声明了 `json:"name"`，v1 也能读入 `{"Name":"Remi"}`。v2 默认按 `name` 精确匹配，`Name` 会被当成未知字段跳过。于是 `Unmarshal` 返回 `nil`，一个刚创建的 `Pet` 里却只剩下空字符串。排查这类问题要看字段值，光断言 `err == nil` 没用。确认有旧客户端依赖这种写法，可以只在对应字段上加 `case:ignore`。 
 
